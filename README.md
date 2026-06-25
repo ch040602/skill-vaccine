@@ -1,5 +1,7 @@
 # SkillShield
 
+![SkillShield teaser: security scanner reviewing Agent Skill packages](docs/assets/skillshield-teaser.png)
+
 SkillShield is **not** an Agent Skill and it is **not** an LLM wrapper.
 
 It is a dependency-free Python CLI/package that scans Agent Skill packages. SkillShield checks
