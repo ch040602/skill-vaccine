@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "skillshield"
+version = "0.1.0"
+description = "Static and semantic-risk scanner for Agent Skills."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{name = "SkillShield contributors"}]
+dependencies = []
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Security",
+    "Topic :: Software Development :: Quality Assurance",
+]
+
+[project.urls]
+Repository = "https://github.com/skillshield/skillshield"
+Documentation = "https://github.com/skillshield/skillshield#readme"
+
+[project.scripts]
+skillshield = "skillshield.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+skillshield = ["data/*.toml"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]

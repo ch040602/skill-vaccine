@@ -1,0 +1,9 @@
+{
+  "suppressions": [
+    {
+      "rule_id": "SS004",
+      "path": "SKILL.md",
+      "reason": "Documented test fixture intentionally exercises overbroad activation."
+    }
+  ]
+}

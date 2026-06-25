@@ -1,0 +1,14 @@
+{
+  "fail_on": "high",
+  "semantic_plan": true,
+  "metadata_audit": true,
+  "host_profile": "ci",
+  "enabled_rules": ["SS004", "SS005", "SS150", "SS300"],
+  "suppressions": [
+    {
+      "rule_id": "SS004",
+      "path": "SKILL.md",
+      "reason": "Config precedence fixture suppresses high selection risk."
+    }
+  ]
+}

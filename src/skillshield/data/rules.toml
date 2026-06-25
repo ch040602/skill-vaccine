@@ -1,0 +1,295 @@
+[[rules]]
+id = "SS001"
+title = "Prompt-injection directive"
+severity = "critical"
+capability = "agent.context"
+lifecycle_stage = "governance"
+source_paper = "SkillSieve; SKILL.md semantic attacks"
+rationale = "Agent-context override language is a primary malicious skill class."
+extractor_kind = "regex"
+pattern = '''\b(ignore|override|bypass)\b.{0,60}\b(previous|system|developer)\b'''
+
+[[rules]]
+id = "SS002"
+title = "Secret exfiltration language"
+severity = "critical"
+capability = "network.write"
+lifecycle_stage = "governance"
+source_paper = "SkillSieve; SkillGuard; SkillProbe"
+rationale = "Secret access combined with data movement is a severe skill risk."
+extractor_kind = "regex"
+pattern = '''\b(exfiltrate|steal|leak|send).{0,80}\b(secret|token|credential|api[_ -]?key|password)\b'''
+
+[[rules]]
+id = "SS003"
+title = "Hidden behavior instruction"
+severity = "high"
+capability = "agent.context"
+lifecycle_stage = "governance"
+source_paper = "SkillSieve; SKILL.md governance evasion"
+rationale = "User-invisible or covert behavior needs explicit review."
+extractor_kind = "regex"
+pattern = '''\b(do not tell|without (the )?user knowing|silently|covertly|hide this)\b'''
+
+[[rules]]
+id = "SS004"
+title = "Overbroad activation trigger"
+severity = "high"
+capability = "agent.selection"
+lifecycle_stage = "selection"
+source_paper = "Under the Hood of SKILL.md"
+rationale = "Always-on activation manipulates routing and selection."
+extractor_kind = "regex"
+pattern = '''\b(always|every request|all tasks|before doing anything|whenever possible)\b'''
+
+[[rules]]
+id = "SS005"
+title = "Persuasive selection framing"
+severity = "medium"
+capability = "agent.selection"
+lifecycle_stage = "selection"
+source_paper = "SKILL.md semantic attack studies"
+rationale = "Promotional wording can bias skill selection."
+extractor_kind = "regex"
+pattern = '''\b(best|official|verified|most secure|actively maintained|preferred)\b.{0,50}\b(skill|choice|option)\b'''
+
+[[rules]]
+id = "SS006"
+title = "Dangerous shell deletion"
+severity = "critical"
+capability = "shell.execute"
+source_paper = "SkillSieve; SkillGuard"
+rationale = "Recursive deletion can cause destructive local effects."
+extractor_kind = "regex"
+pattern = '''\brm\s+-rf\b|Remove-Item\s+.*-Recurse|del\s+/s|shutil\.rmtree\s*\('''
+
+[[rules]]
+id = "SS007"
+title = "Dynamic code execution"
+severity = "high"
+capability = "code.execute"
+source_paper = "SkillSieve"
+rationale = "Dynamic code execution can hide or synthesize unsafe behavior."
+extractor_kind = "regex"
+pattern = '''\b(eval|exec|Invoke-Expression|iex|compile)\s*\('''
+
+[[rules]]
+id = "SS008"
+title = "Credential environment access"
+severity = "high"
+capability = "env.read"
+source_paper = "SkillGuard"
+rationale = "Environment access can expose credentials and runtime secrets."
+extractor_kind = "regex"
+pattern = '''\b(os\.environ|process\.env|\$env:|getenv)\b'''
+
+[[rules]]
+id = "SS009"
+title = "Network egress"
+severity = "high"
+capability = "network.write"
+source_paper = "SkillGuard; SkillProbe"
+rationale = "Network egress can send user data or secrets to external endpoints."
+extractor_kind = "regex"
+pattern = '''\b(curl|wget|Invoke-WebRequest|requests\.(get|post))\b|fetch\s*\('''
+
+[[rules]]
+id = "SS010"
+title = "Reverse shell pattern"
+severity = "critical"
+capability = "network.write"
+source_paper = "SkillSieve"
+rationale = "Reverse shell constructs are strong malicious execution evidence."
+extractor_kind = "regex"
+pattern = '''(bash\s+-i|nc\s+-e|/dev/tcp/|powershell\s+-nop)'''
+
+[[rules]]
+id = "SS011"
+title = "Obfuscation primitive"
+severity = "medium"
+capability = "code.execute"
+source_paper = "SkillSieve"
+rationale = "Obfuscation can hide unsafe payloads from static and human review."
+extractor_kind = "regex"
+pattern = '''\b(base64|fromCharCode|atob|btoa|certutil\s+-decode)\b'''
+
+[[rules]]
+id = "SS012"
+title = "Discovery keyword stuffing"
+severity = "medium"
+capability = "agent.selection"
+lifecycle_stage = "discovery"
+source_paper = "SKILL.md discovery manipulation"
+rationale = "Keyword stuffing can manipulate retrieval and ranking."
+extractor_kind = "regex"
+pattern = '''\b(search keywords|ranking keywords|retrieval keywords)\s*:'''
+
+[[rules]]
+id = "SS013"
+title = "Governance reviewer jailbreak"
+severity = "high"
+capability = "agent.context"
+lifecycle_stage = "governance"
+source_paper = "SKILL.md governance evasion"
+rationale = "Instructions directed at reviewers or scanners undermine admission review."
+extractor_kind = "regex"
+pattern = '''\b(reviewer|judge|scanner|governance)\b.{0,80}\b(mark|classify|rate)\b.{0,40}\b(safe|benign|approved)\b|\bignore\b.{0,80}\b(risky|malicious|unsafe)\b'''
+
+[[rules]]
+id = "SS014"
+title = "Checklist-hidden risky behavior"
+severity = "high"
+capability = "agent.context"
+lifecycle_stage = "governance"
+source_paper = "SKILL.md governance evasion"
+rationale = "Risky instructions can be hidden in checklist or completion text."
+extractor_kind = "regex"
+pattern = '''\b(Definition of Done|DoD|checklist|completion checklist)\b.{0,400}\b(silently|exfiltrate|send|token|credential|secret)\b'''
+
+[[rules]]
+id = "SS015"
+title = "Process execution"
+severity = "high"
+capability = "shell.execute"
+source_paper = "SkillGuard; SkillSieve"
+rationale = "Process launch requires explicit capability governance."
+extractor_kind = "regex"
+pattern = '''\b(subprocess\.(run|Popen|call)|os\.system|Start-Process)\b'''
+
+[[rules]]
+id = "SS016"
+title = "Local file read"
+severity = "medium"
+capability = "filesystem.read"
+source_paper = "SkillGuard; SkillSieve"
+rationale = "Local file reads need protected-object review and path scoping."
+extractor_kind = "regex"
+pattern = '''\b(Path\s*\([^)]*\)\.read_text\s*\(|open\s*\([^,\n]+,\s*['"]r|fs\.readFileSync\s*\(|Get-Content\b|cat\s+[^\n|;&]+)'''
+
+[[rules]]
+id = "SS017"
+title = "Local file write or delete"
+severity = "high"
+capability = "filesystem.write"
+source_paper = "SkillGuard; SkillSieve"
+rationale = "Local writes and deletion can alter user files or source trees."
+extractor_kind = "regex"
+pattern = '''\b(Path\s*\([^)]*\)\.write_text\s*\(|open\s*\([^,\n]+,\s*['"][wax]|fs\.writeFileSync\s*\(|rm\s+-rf\b|Remove-Item\b|del\s+/s)'''
+
+[[rules]]
+id = "SS018"
+title = "Package installation"
+severity = "high"
+capability = "package.install"
+source_paper = "SkillGuard"
+rationale = "Package installation changes the runtime environment and supply-chain surface."
+extractor_kind = "regex"
+pattern = '''\b(pip\s+install|python\s+-m\s+pip\s+install|npm\s+install|yarn\s+add|pnpm\s+add|pipx\s+install|Install-Module\b)|["']python["']\s*,\s*["']-m["']\s*,\s*["']pip["']\s*,\s*["']install["']'''
+
+[[rules]]
+id = "SS100"
+title = "Missing required frontmatter"
+severity = "medium"
+capability = "skill.conformance"
+source_paper = "Skilldex"
+rationale = "Required metadata is needed for routing, registry review, and conformance."
+extractor_kind = "frontmatter"
+
+[[rules]]
+id = "SS101"
+title = "Low-specificity description"
+severity = "low"
+capability = "skill.conformance"
+source_paper = "Skilldex; Google Agentic RAG"
+rationale = "Low-specificity descriptions weaken routing and corpus selection."
+extractor_kind = "frontmatter"
+
+[[rules]]
+id = "SS102"
+title = "Invalid frontmatter syntax"
+severity = "medium"
+capability = "skill.conformance"
+source_paper = "Skilldex"
+rationale = "Malformed frontmatter blocks automated registry and scanner interpretation."
+extractor_kind = "frontmatter"
+
+[[rules]]
+id = "SS150"
+title = "Missing registry metadata"
+severity = "medium"
+capability = "registry.metadata"
+source_paper = "Skilldex; SkillProbe"
+rationale = "Registry trust review requires provenance, maintainer, version, and update metadata."
+extractor_kind = "metadata"
+
+[[rules]]
+id = "SS151"
+title = "Invalid source URL"
+severity = "medium"
+capability = "registry.metadata"
+source_paper = "Skilldex"
+rationale = "Source-linked trust requires valid HTTPS provenance."
+extractor_kind = "metadata"
+
+[[rules]]
+id = "SS152"
+title = "Non-semver version"
+severity = "low"
+capability = "registry.metadata"
+source_paper = "Skilldex"
+rationale = "Version metadata should support package comparison and registry updates."
+extractor_kind = "metadata"
+
+[[rules]]
+id = "SS153"
+title = "README metadata mismatch"
+severity = "medium"
+capability = "registry.metadata"
+source_paper = "SkillProbe; Skilldex"
+rationale = "README and SKILL.md metadata should describe the same artifact."
+extractor_kind = "metadata"
+
+[[rules]]
+id = "SS200"
+title = "Missing permission manifest"
+severity = "medium"
+capability = "permission.manifest"
+source_paper = "SkillGuard"
+rationale = "Risky inferred capabilities should be declared for deny-by-default policy."
+extractor_kind = "permission"
+
+[[rules]]
+id = "SS201"
+title = "Inferred capability not declared"
+severity = "high"
+capability = "permission.manifest"
+source_paper = "SkillGuard"
+rationale = "Declared manifests must cover inferred behavior."
+extractor_kind = "permission"
+
+[[rules]]
+id = "SS202"
+title = "Script capability not described"
+severity = "high"
+capability = "permission.manifest"
+source_paper = "SkillSieve; SkillProbe"
+rationale = "Capabilities hidden outside SKILL.md weaken user and reviewer visibility."
+extractor_kind = "cross-file"
+
+[[rules]]
+id = "SS300"
+title = "Needs Layer 2 semantic review"
+severity = "medium"
+capability = "agent.context"
+source_paper = "SkillSieve"
+rationale = "Static findings can require structured semantic decomposition before approval."
+extractor_kind = "semantic-routing"
+
+[[rules]]
+id = "SS301"
+title = "Semantic review coverage gap"
+severity = "medium"
+capability = "agent.context"
+source_paper = "SKILL.md governance evasion"
+rationale = "Late high-risk evidence can evade bounded semantic review windows."
+extractor_kind = "semantic-coverage"

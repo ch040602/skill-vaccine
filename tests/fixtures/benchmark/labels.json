@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "benchmark_version": "0.1.0",
+  "name": "skillshield-mvp-benchmark",
+  "cases": [
+    {
+      "id": "benign_skill",
+      "path": "../benign_skill",
+      "label": "benign",
+      "attack_class": "benign",
+      "source_paper": "Skilldex / OpenSkillEval",
+      "expected_rule_ids": []
+    },
+    {
+      "id": "malicious_skill",
+      "path": "../malicious_skill",
+      "label": "malicious",
+      "attack_class": "prompt_injection_and_exfiltration",
+      "source_paper": "SkillSieve / SkillGuard",
+      "expected_rule_ids": ["SS001", "SS002"]
+    },
+    {
+      "id": "obfuscated_skill",
+      "path": "../obfuscated_skill",
+      "label": "malicious",
+      "attack_class": "obfuscation",
+      "source_paper": "SkillSieve",
+      "expected_rule_ids": ["SS011"]
+    },
+    {
+      "id": "overbroad_skill",
+      "path": "../overbroad_skill",
+      "label": "malicious",
+      "attack_class": "overbroad_selection",
+      "source_paper": "Under the Hood of SKILL.md",
+      "expected_rule_ids": ["SS004", "SS005"]
+    },
+    {
+      "id": "permission_mismatch_skill",
+      "path": "../permission_mismatch_skill",
+      "label": "malicious",
+      "attack_class": "permission_mismatch",
+      "source_paper": "SkillGuard / SkillProbe",
+      "expected_rule_ids": ["SS201"]
+    }
+  ]
+}

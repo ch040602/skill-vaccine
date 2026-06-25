@@ -1,0 +1,32 @@
+name: SkillShield Scan
+description: Scan Agent Skill packages and write SARIF output.
+
+inputs:
+  path:
+    description: Skill folder or repository path to scan.
+    required: false
+    default: .
+  fail-on:
+    description: Minimum severity that makes the scan command fail.
+    required: false
+    default: critical
+  sarif-file:
+    description: Path where SARIF output will be written.
+    required: false
+    default: skillshield.sarif
+
+outputs:
+  sarif-file:
+    description: Path to the generated SARIF file.
+    value: ${{ inputs.sarif-file }}
+
+runs:
+  using: composite
+  steps:
+    - name: Install SkillShield
+      shell: bash
+      run: python -m pip install .
+    - name: Run SkillShield SARIF scan
+      shell: bash
+      run: |
+        skillshield scan "${{ inputs.path }}" --format sarif --fail-on "${{ inputs.fail-on }}" > "${{ inputs.sarif-file }}"

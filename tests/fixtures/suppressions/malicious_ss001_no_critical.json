@@ -1,0 +1,9 @@
+{
+  "suppressions": [
+    {
+      "rule_id": "SS001",
+      "path": "SKILL.md",
+      "reason": "Critical suppression should be ignored without explicit opt-in."
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "allow_critical_suppressions": true,
+  "suppressions": [
+    {
+      "rule_id": "SS001",
+      "path": "SKILL.md",
+      "reason": "Critical suppression explicitly approved for test fixture."
+    }
+  ]
+}

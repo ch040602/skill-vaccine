@@ -1,0 +1,161 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-06-25T16:05:00+09:00",
+  "question": "Which under-served Agent Skill project should be built for broad GitHub adoption, and how should SkillShield be developed from the relevant research?",
+  "mode": "portable_google_agentic_rag_pattern",
+  "orchestrator": {
+    "status": "completed",
+    "notes": [
+      "Used public web search, arXiv PDFs, local paper-summary-agent extraction scripts, role-scoped analysis, and RDD TODO conversion.",
+      "This trace was added after audit because the initial run preserved prose synthesis but not complete machine-readable lineage."
+    ]
+  },
+  "corpus_catalog": [
+    {
+      "id": "skillsieve",
+      "description": "Hierarchical triage framework for detecting malicious AI agent skills using static checks, structured semantic decomposition, and LLM jury review.",
+      "source_url": "https://arxiv.org/abs/2604.06550",
+      "local_pdf": "C:/Users/hcslab_523/Documents/paper-summary-agent/downloaded/arxiv.org_pdf_2604.06550.pdf",
+      "local_text": "C:/Users/hcslab_523/Documents/paper-summary-agent/downloaded/arxiv.org_pdf_2604.06550.txt"
+    },
+    {
+      "id": "skillguard",
+      "description": "Permission framework for Agent Skills with manifests, deny-by-default runtime access control, capability inference, and monitoring.",
+      "source_url": "https://arxiv.org/abs/2606.03024",
+      "local_pdf": "C:/Users/hcslab_523/Documents/paper-summary-agent/downloaded/arxiv.org_pdf_2606.03024.pdf",
+      "local_text": "C:/Users/hcslab_523/Documents/paper-summary-agent/downloaded/arxiv.org_pdf_2606.03024.txt"
+    },
+    {
+      "id": "skillprobe",
+      "description": "Marketplace auditing framework for semantic-behavioral alignment and cross-skill combinatorial risk simulation.",
+      "source_url": "https://arxiv.org/abs/2603.21019",
+      "local_pdf": "C:/Users/hcslab_523/Documents/paper-summary-agent/downloaded/arxiv.org_pdf_2603.21019.pdf",
+      "local_text": "C:/Users/hcslab_523/Documents/paper-summary-agent/downloaded/arxiv.org_pdf_2603.21019.txt"
+    },
+    {
+      "id": "skillmd_semantic_attack",
+      "description": "SKILL.md-only semantic supply-chain attacks against discovery, selection, and governance stages of skill registries.",
+      "source_url": "https://arxiv.org/abs/2605.11418",
+      "local_pdf": "C:/Users/hcslab_523/Documents/paper-summary-agent/downloaded/arxiv.org_pdf_2605.11418.pdf",
+      "local_text": "C:/Users/hcslab_523/Documents/paper-summary-agent/downloaded/arxiv.org_pdf_2605.11418.txt"
+    },
+    {
+      "id": "skilldex",
+      "description": "Package manager and registry for Agent Skill packages, including conformance diagnostics and skillsets.",
+      "source_url": "https://arxiv.org/abs/2604.16911",
+      "local_pdf": "C:/Users/hcslab_523/Documents/paper-summary-agent/downloaded/arxiv.org_pdf_2604.16911.pdf",
+      "local_text": "C:/Users/hcslab_523/Documents/paper-summary-agent/downloaded/arxiv.org_pdf_2604.16911.txt"
+    },
+    {
+      "id": "openskill_eval",
+      "description": "Dynamic evaluation framework for open skill quality, skill usage, task adherence, and cost-performance tradeoffs.",
+      "source_url": "https://arxiv.org/abs/2605.23657",
+      "local_pdf": "C:/Users/hcslab_523/Documents/paper-summary-agent/downloaded/arxiv.org_pdf_2605.23657.pdf",
+      "local_text": "C:/Users/hcslab_523/Documents/paper-summary-agent/downloaded/arxiv.org_pdf_2605.23657.txt"
+    },
+    {
+      "id": "skillsbench",
+      "description": "Benchmark for measuring whether Agent Skills improve task performance through paired no-skill and skill-augmented evaluation.",
+      "source_url": "https://arxiv.org/abs/2602.12670",
+      "local_pdf": "C:/Users/hcslab_523/Documents/paper-summary-agent/downloaded/arxiv.org_pdf_2602.12670.pdf",
+      "local_text": "C:/Users/hcslab_523/Documents/paper-summary-agent/downloaded/arxiv.org_pdf_2602.12670.txt"
+    },
+    {
+      "id": "skill_landscape",
+      "description": "Data-driven analysis of the Agent Skill ecosystem, including growth, category concentration, adoption, and supply-demand imbalance.",
+      "source_url": "https://arxiv.org/abs/2602.08004",
+      "local_pdf": "C:/Users/hcslab_523/Documents/paper-summary-agent/downloaded/arxiv.org_pdf_2602.08004.pdf",
+      "local_text": "C:/Users/hcslab_523/Documents/paper-summary-agent/downloaded/arxiv.org_pdf_2602.08004.txt"
+    }
+  ],
+  "retrieval_plan": {
+    "required_facts": [
+      {"id": "F1", "description": "Evidence that Agent Skill security is a large and underserved problem.", "priority": "must"},
+      {"id": "F2", "description": "Detection architecture suitable for SkillShield MVP and later high-recall semantic review.", "priority": "must"},
+      {"id": "F3", "description": "Permission/capability governance requirements for skill artifacts.", "priority": "must"},
+      {"id": "F4", "description": "Registry, conformance, and evaluation features that improve adoption and trust.", "priority": "should"},
+      {"id": "F5", "description": "Known limitations and follow-up work that should become RDD TODOs.", "priority": "must"}
+    ],
+    "routes": [
+      {"fact_id": "F1", "candidate_corpus_ids": ["skill_landscape", "skillmd_semantic_attack", "skillprobe"], "reason": "Ecosystem scale, semantic supply-chain attacks, and marketplace audit findings establish demand and risk."},
+      {"fact_id": "F2", "candidate_corpus_ids": ["skillsieve", "skillmd_semantic_attack"], "reason": "SkillSieve defines layered detection; SKILL.md attack paper defines registry-facing semantic manipulation."},
+      {"fact_id": "F3", "candidate_corpus_ids": ["skillguard", "skillprobe"], "reason": "SkillGuard defines permission artifacts and runtime governance; SkillProbe defines alignment and risk graph needs."},
+      {"fact_id": "F4", "candidate_corpus_ids": ["skilldex", "openskill_eval", "skillsbench"], "reason": "These corpora cover package conformance, skill quality evaluation, and benchmark-driven usefulness."},
+      {"fact_id": "F5", "candidate_corpus_ids": ["skillsieve", "skillguard", "skillprobe", "openskill_eval", "skillsbench"], "reason": "Limitations are distributed across detection, permissions, composition, and evaluation papers."}
+    ],
+    "stop_conditions": [
+      "Each must-have fact has at least two independent supporting snippets when possible.",
+      "Unsupported claims become TODOs or are removed from final synthesis.",
+      "Stop when the RDD TODO set covers every high-risk missing implementation area."
+    ]
+  },
+  "query_rewrites": {
+    "subqueries": [
+      {"id": "Q1", "fact_id": "F2", "query": "SkillSieve Layer 1 Layer 2 Layer 3 malicious agent skills F1 cost", "target_corpus_ids": ["skillsieve"], "reason": "Recover detection pipeline, metrics, and implementation-relevant signals."},
+      {"id": "Q2", "fact_id": "F3", "query": "SkillGuard permission manifest deny-by-default capability inference taxonomy F1", "target_corpus_ids": ["skillguard"], "reason": "Recover permission model and manifest-generation requirements."},
+      {"id": "Q3", "fact_id": "F3", "query": "SkillProbe semantic behavioral alignment cross skill risk graph marketplace audit", "target_corpus_ids": ["skillprobe"], "reason": "Recover cross-skill composition and admission findings."},
+      {"id": "Q4", "fact_id": "F2", "query": "SKILL.md semantic supply chain discovery selection governance evasion Top-10 77.6", "target_corpus_ids": ["skillmd_semantic_attack"], "reason": "Recover SKILL.md-only attack classes that static code scanners miss."},
+      {"id": "Q5", "fact_id": "F4", "query": "Skilldex conformance score line-level diagnostics Agent Skill registry metadata", "target_corpus_ids": ["skilldex"], "reason": "Recover registry and conformance requirements."},
+      {"id": "Q6", "fact_id": "F4", "query": "OpenSkillEval SkillsBench skill read rate pass rate normalized gain evaluation hooks", "target_corpus_ids": ["openskill_eval", "skillsbench"], "reason": "Recover evaluation and benchmark hooks."}
+    ]
+  },
+  "retrieved_snippets": [
+    {"id": "S1", "corpus_id": "skillsieve", "source": "arXiv:2604.06550 extracted text", "local_text": "C:/Users/hcslab_523/Documents/paper-summary-agent/downloaded/arxiv.org_pdf_2604.06550.txt", "evidence_summary": "SkillSieve uses Layer 1 static checks, Layer 2 structured semantic decomposition, and Layer 3 LLM jury; reports strong final F1 and low per-skill cost.", "supports_facts": ["F2", "F5"]},
+    {"id": "S2", "corpus_id": "skillguard", "source": "arXiv:2606.03024 extracted text", "local_text": "C:/Users/hcslab_523/Documents/paper-summary-agent/downloaded/arxiv.org_pdf_2606.03024.txt", "evidence_summary": "SkillGuard treats skills as permission-bearing executable artifacts and combines manifests, runtime access control, user authorization, deny-by-default, capability inference, and monitoring.", "supports_facts": ["F3", "F5"]},
+    {"id": "S3", "corpus_id": "skillprobe", "source": "arXiv:2603.21019 extracted text", "local_text": "C:/Users/hcslab_523/Documents/paper-summary-agent/downloaded/arxiv.org_pdf_2603.21019.txt", "evidence_summary": "SkillProbe audits admission, semantic-behavioral alignment, and cross-skill combinatorial risk; marketplace popularity is not a reliable security proxy.", "supports_facts": ["F1", "F3", "F5"]},
+    {"id": "S4", "corpus_id": "skillmd_semantic_attack", "source": "arXiv:2605.11418 extracted text", "local_text": "C:/Users/hcslab_523/Documents/paper-summary-agent/downloaded/arxiv.org_pdf_2605.11418.txt", "evidence_summary": "SKILL.md-only changes can manipulate discovery, selection, and governance even without changing executable code.", "supports_facts": ["F1", "F2", "F5"]},
+    {"id": "S5", "corpus_id": "skilldex", "source": "arXiv:2604.16911 extracted text", "local_text": "C:/Users/hcslab_523/Documents/paper-summary-agent/downloaded/arxiv.org_pdf_2604.16911.txt", "evidence_summary": "Skilldex motivates package-manager and registry-level conformance scoring with line-level diagnostics and metadata.", "supports_facts": ["F4"]},
+    {"id": "S6", "corpus_id": "openskill_eval", "source": "arXiv:2605.23657 extracted text", "local_text": "C:/Users/hcslab_523/Documents/paper-summary-agent/downloaded/arxiv.org_pdf_2605.23657.txt", "evidence_summary": "OpenSkillEval shows skill availability does not guarantee effective use and motivates dynamic task-grounded evaluation hooks.", "supports_facts": ["F4", "F5"]},
+    {"id": "S7", "corpus_id": "skillsbench", "source": "arXiv:2602.12670 extracted text", "local_text": "C:/Users/hcslab_523/Documents/paper-summary-agent/downloaded/arxiv.org_pdf_2602.12670.txt", "evidence_summary": "SkillsBench motivates paired no-skill versus skill-augmented evaluation with deterministic verifiers.", "supports_facts": ["F4", "F5"]},
+    {"id": "S8", "corpus_id": "skill_landscape", "source": "arXiv:2602.08004 extracted text", "local_text": "C:/Users/hcslab_523/Documents/paper-summary-agent/downloaded/arxiv.org_pdf_2602.08004.txt", "evidence_summary": "The agent skill ecosystem is large, rapidly changing, and imbalanced across categories, supporting demand for tooling.", "supports_facts": ["F1", "F4"]}
+  ],
+  "draft_answer": {
+    "status": "draft_from_retrieved_snippets",
+    "summary": "SkillShield is justified as a local-first Agent Skill security and governance scanner. The MVP should start with static Layer 1 scanning, structured outputs, and permission inference, while preserving TODOs for semantic review, jury review, manifest policy, cross-skill risk graphs, conformance, and evaluation hooks."
+  },
+  "context_assessment": {
+    "status": "sufficient",
+    "confidence": 0.86,
+    "covered_facts": [
+      {"fact_id": "F1", "snippet_ids": ["S3", "S4", "S8"]},
+      {"fact_id": "F2", "snippet_ids": ["S1", "S4"]},
+      {"fact_id": "F3", "snippet_ids": ["S2", "S3"]},
+      {"fact_id": "F4", "snippet_ids": ["S5", "S6", "S7", "S8"]},
+      {"fact_id": "F5", "snippet_ids": ["S1", "S2", "S3", "S4", "S6", "S7"]}
+    ],
+    "missing_facts": [
+      "Line-precise citations in the final research synthesis are still incomplete for every claim.",
+      "Official artifact/dataset schemas from the papers have not been vendored or normalized."
+    ],
+    "unsupported_claims": [],
+    "feedback_queries": [
+      {
+        "query": "paper artifact dataset schema SkillSieve SkillGuard SkillProbe GitHub repository",
+        "target_corpus_ids": ["skillsieve", "skillguard", "skillprobe"],
+        "reason": "Needed before benchmark fixture suite or artifact-compatible evaluation."
+      }
+    ],
+    "reason": "Enough evidence exists for product architecture and RDD TODO planning, but not for final benchmark implementation."
+  },
+  "iterations": [
+    {"iteration": 0, "status": "broad_discovery", "notes": "Initial web search identified candidate papers and adjacent tools. This was acceptable because corpus candidates were not known yet."},
+    {"iteration": 1, "status": "routed_evidence_extraction", "notes": "Papers were fetched, extracted, and assigned to role-scoped analysis: method/security, permission/governance, ecosystem/evaluation."},
+    {"iteration": 2, "status": "sufficiency_and_todo_conversion", "notes": "Subagent findings and retrieved evidence were converted into RDD TODOs and MVP implementation decisions."},
+    {"iteration": 3, "status": "audit_remediation", "notes": "This file and the compliance audit were added to preserve Google-style query lineage, snippet provenance, sufficiency assessment, and grounded synthesis mapping."}
+  ],
+  "grounded_answer": {
+    "status": "answered",
+    "answer": "SkillShield should be developed as a local-first Agent Skill scanner with static Layer 1 detection, structured JSON/SARIF output, capability inference, manifest suggestions, and a staged roadmap for semantic review, jury review, permission governance, cross-skill risk graphs, conformance, and evaluation.",
+    "citations": [
+      {"claim": "The MVP should start with static Layer 1 detection and later add semantic and jury layers.", "snippet_ids": ["S1", "S4"]},
+      {"claim": "Permission/capability inference and manifest suggestions are core to governance.", "snippet_ids": ["S2", "S3"]},
+      {"claim": "Conformance, registry metadata, and evaluation hooks are needed for adoption and trust.", "snippet_ids": ["S5", "S6", "S7", "S8"]},
+      {"claim": "Cross-skill risk and SKILL.md-only manipulation must remain explicit follow-up work.", "snippet_ids": ["S3", "S4"]}
+    ],
+    "missing_facts": [
+      "Paper artifact schema normalization remains future work.",
+      "Individual Korean paper summaries remain future work."
+    ]
+  }
+}
+

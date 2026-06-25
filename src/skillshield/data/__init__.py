@@ -1,0 +1,1 @@
+"""Packaged SkillShield rule data."""

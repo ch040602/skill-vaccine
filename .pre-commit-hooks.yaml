@@ -1,0 +1,7 @@
+- id: skillshield
+  name: SkillShield
+  description: Scan Agent Skill packages for security and conformance risks.
+  entry: skillshield scan .
+  language: python
+  pass_filenames: false
+  args: [--fail-on, critical]
