@@ -2,11 +2,15 @@
 
 ![SkillShield teaser: security scanner reviewing Agent Skill packages](docs/assets/skillshield-teaser.png)
 
-SkillShield is **not** an Agent Skill and it is **not** an LLM wrapper.
+SkillShield's core scanner is **not** an Agent Skill and it is **not** an LLM wrapper.
 
 It is a dependency-free Python CLI/package that scans Agent Skill packages. SkillShield checks
 `SKILL.md`, referenced files, metadata, capability claims, and cross-skill combinations before an
 agent, CI job, registry, or marketplace review process trusts a skill.
+
+The repository also includes an optional `skills/skillshield-review` Agent Skill adapter for Codex
+and Claude Code. That adapter does not replace the CLI; it asks the agent LLM to review a safe
+SkillShield packet when semantic judgment is needed.
 
 ## Contents
 
@@ -15,6 +19,7 @@ agent, CI job, registry, or marketplace review process trusts a skill.
 - [Install](#install)
 - [Quick Start](#quick-start)
 - [Outputs](#outputs)
+- [LLM-Assisted Review](#llm-assisted-review)
 - [Policy Profiles](#policy-profiles)
 - [Integrations](#integrations)
 - [Documentation](#documentation)
@@ -39,19 +44,22 @@ Current checks cover:
 
 ## What This Is
 
-SkillShield is a scanner for skills, not a skill itself.
+SkillShield is primarily a scanner for skills. The installable Skill adapter is optional and lives
+under `skills/skillshield-review`.
 
 | Question | Answer |
 | --- | --- |
-| Is this repo a Codex/Agent Skill? | No. It does not expose a root `SKILL.md` for installation as a skill. |
+| Is the core scanner a Codex/Agent Skill? | No. The Python package is a normal CLI/library. |
+| Is there an optional Codex/Claude Code Skill? | Yes. `skills/skillshield-review` wraps the CLI output for agent-assisted review. |
 | Does the scanner call an LLM by default? | No. The default scanner is static, local, and dependency-free. |
-| What are the semantic and jury commands? | Provider-neutral schemas and deterministic fake-provider test harnesses. |
+| What are the semantic and jury commands? | Provider-neutral schemas, deterministic fake-provider test harnesses, and safe LLM review packets. |
 | What does it scan? | Agent Skill folders, including `SKILL.md`, helper scripts, metadata, config, and related packages. |
 | Who is it for? | Developers, CI pipelines, registries, and marketplace reviewers evaluating third-party or generated skills. |
 
-The Layer 2 semantic review and Layer 3 jury pieces are contracts for future model-backed review.
-They currently use local fake providers for interface testing and do not send data to any external
-model API.
+The Layer 2 semantic review and Layer 3 jury pieces define the review contract. The default
+implementation still uses local fake providers for interface testing and does not send data to any
+external model API. Use `skillshield llm prompt` or the `skillshield-review` Skill when you want a
+Codex or Claude Code session to perform the semantic review over a bounded evidence packet.
 
 ## Install
 
@@ -93,6 +101,7 @@ skillshield semantic schema
 skillshield semantic review path\to\skill --provider fake
 skillshield jury schema
 skillshield jury review path\to\skill --provider fake
+skillshield llm prompt path\to\skill --target codex --format markdown
 skillshield graph path\to\skills
 skillshield eval tests\fixtures\benchmark\labels.json
 skillshield telemetry schema
@@ -112,6 +121,33 @@ Every scan reports:
 
 JSON and SARIF are intended for CI, registry intake, and review automation. Text output is for local
 triage.
+
+## LLM-Assisted Review
+
+SkillShield now has two explicit operating modes.
+
+| Mode | Use it when | What runs | LLM behavior |
+| --- | --- | --- | --- |
+| CLI-only mode | You need deterministic local scans, CI gates, SARIF, benchmarks, or registry intake. | `skillshield scan`, `semantic review --provider fake`, `jury review --provider fake`. | No LLM call. No network. No reviewed skill code execution. |
+| Skill-assisted LLM review | You want Codex or Claude Code to judge intent, permission justification, covert behavior, or cross-file consistency using static evidence. | `skills/skillshield-review` runs `skillshield llm prompt ...` and the agent reviews the packet. | The agent LLM reviews the packet in-session. SkillShield still does not call a model API itself. |
+
+Generate a review packet directly:
+
+```powershell
+skillshield llm prompt path\to\skill --target codex --format markdown
+skillshield llm prompt path\to\skill --target claude-code --format json
+```
+
+Use the installable Skill adapter from this repo:
+
+```text
+skills/skillshield-review
+```
+
+The adapter is intentionally small: it tells Codex or Claude Code to collect SkillShield evidence,
+avoid executing reviewed skill code, preserve critical static findings, and return structured JSON
+with semantic task results. This is the path that matches the papers' layered pattern: fast static
+screening first, LLM semantic review only when judgment is needed.
 
 ## Policy Profiles
 

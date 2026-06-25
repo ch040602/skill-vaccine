@@ -178,6 +178,62 @@ def test_jury_cli_outputs_json(capsys) -> None:
     assert payload["final_verdict"] in {"malicious", "hold_for_human_review"}
 
 
+def test_llm_prompt_cli_outputs_codex_review_packet(capsys) -> None:
+    exit_code = main([
+        "llm",
+        "prompt",
+        str(FIXTURES / "malicious_skill"),
+        "--target",
+        "codex",
+        "--format",
+        "json",
+    ])
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    assert exit_code == 0
+    assert payload["target"] == "codex"
+    assert payload["network_enabled"] is False
+    assert payload["execution_allowed"] is False
+    assert payload["scan"]["max_severity"] == "critical"
+    assert "intent_alignment" in payload["review_tasks"]
+    assert "Do not execute" in payload["prompt"]
+    assert "critical static findings" in payload["prompt"]
+
+
+def test_llm_prompt_cli_outputs_claude_code_markdown_packet(capsys) -> None:
+    exit_code = main([
+        "llm",
+        "prompt",
+        str(FIXTURES / "metadata_missing_skill"),
+        "--target",
+        "claude-code",
+        "--format",
+        "markdown",
+    ])
+    captured = capsys.readouterr()
+    assert exit_code == 0
+    assert "# SkillShield LLM Review Packet" in captured.out
+    assert "Target agent: claude-code" in captured.out
+    assert "SS150" in captured.out
+    assert "Return JSON" in captured.out
+
+
+def test_agent_skill_adapter_is_installable_and_mentions_codex_and_claude_code() -> None:
+    skill_md = Path("skills/skillshield-review/SKILL.md")
+    text = skill_md.read_text(encoding="utf-8")
+    assert "name: skillshield-review" in text
+    assert "description:" in text
+    assert "Codex" in text
+    assert "Claude Code" in text
+    assert "skillshield llm prompt" in text
+    assert "Do not execute" in text
+
+
+def test_manifest_includes_skill_adapter_files() -> None:
+    manifest = Path("MANIFEST.in").read_text(encoding="utf-8")
+    assert "recursive-include skills *.md *.yaml" in manifest
+
+
 def test_discovery_keyword_stuffing_reports_lifecycle_stage() -> None:
     result = scan_path(FIXTURES / "discovery_manipulation_skill")
     finding = next(finding for finding in result.findings if finding.rule_id == "SS012")
@@ -272,6 +328,15 @@ def test_readme_documents_pre_commit_threshold_configuration() -> None:
     readme = Path("README.md").read_text(encoding="utf-8")
     assert "pre-commit" in readme
     assert "args: [--fail-on, high]" in readme
+
+
+def test_readme_separates_cli_only_and_skill_assisted_llm_review() -> None:
+    readme = Path("README.md").read_text(encoding="utf-8")
+    assert "CLI-only mode" in readme
+    assert "Skill-assisted LLM review" in readme
+    assert "skillshield llm prompt" in readme
+    assert "skills/skillshield-review" in readme
+    assert "Claude Code" in readme
 
 
 def test_benchmark_labels_cover_required_attack_classes() -> None:

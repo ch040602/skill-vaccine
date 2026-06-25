@@ -3,6 +3,7 @@ include action.yml
 include .pre-commit-hooks.yaml
 recursive-include docs *.md
 recursive-include research *.md *.json
+recursive-include skills *.md *.yaml
 recursive-include src/skillshield/data *.toml
 recursive-include tests/fixtures *.bat *.js *.json *.md *.ps1 *.py *.sh *.toml
 global-exclude __pycache__ *.py[cod]

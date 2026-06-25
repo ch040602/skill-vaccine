@@ -1,0 +1,4 @@
+interface:
+  display_name: "SkillShield Review"
+  short_description: "Review Agent Skills with SkillShield"
+  default_prompt: "Use $skillshield-review to scan and LLM-review an Agent Skill safely."
