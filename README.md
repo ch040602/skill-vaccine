@@ -63,6 +63,13 @@ Codex or Claude Code session to perform the semantic review over a bounded evide
 
 ## Install
 
+From npm:
+
+```powershell
+npm install -g skill-shield
+skillshield --help
+```
+
 From a checkout:
 
 ```powershell
@@ -246,6 +253,7 @@ Build distribution artifacts:
 
 ```powershell
 python -m pip wheel . --no-deps --no-build-isolation -w .codex\review-driven-development\artifacts\wheel-smoke
+npm pack --dry-run
 ```
 
 Current benchmark smoke metrics on the bundled fixture set:

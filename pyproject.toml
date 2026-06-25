@@ -22,8 +22,8 @@ classifiers = [
 ]
 
 [project.urls]
-Repository = "https://github.com/skillshield/skillshield"
-Documentation = "https://github.com/skillshield/skillshield#readme"
+Repository = "https://github.com/ch040602/skill-shield"
+Documentation = "https://github.com/ch040602/skill-shield#readme"
 
 [project.scripts]
 skillshield = "skillshield.cli:main"

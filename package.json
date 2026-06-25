@@ -1,0 +1,47 @@
+{
+  "name": "skill-shield",
+  "version": "0.1.0",
+  "description": "Static and semantic-risk scanner for Agent Skills.",
+  "license": "MIT",
+  "homepage": "https://github.com/ch040602/skill-shield#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ch040602/skill-shield.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ch040602/skill-shield/issues"
+  },
+  "keywords": [
+    "agent-skills",
+    "skill-security",
+    "static-analysis",
+    "codex",
+    "claude-code",
+    "security"
+  ],
+  "bin": {
+    "skillshield": "bin/skillshield.js"
+  },
+  "files": [
+    "bin/",
+    "src/skillshield/*.py",
+    "src/skillshield/data/*.py",
+    "src/skillshield/data/*.toml",
+    "skills/",
+    "docs/",
+    "research/",
+    "README.md",
+    "pyproject.toml",
+    "MANIFEST.in"
+  ],
+  "scripts": {
+    "test": "python -m pytest && python -m compileall -q src tests && node bin/skillshield.js --help",
+    "pack:check": "npm pack --dry-run"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import shutil
+import subprocess
 import tomllib
 from importlib.resources import files
 from pathlib import Path
@@ -358,6 +359,35 @@ def test_agent_skill_adapter_is_installable_and_mentions_codex_and_claude_code()
 def test_manifest_includes_skill_adapter_files() -> None:
     manifest = Path("MANIFEST.in").read_text(encoding="utf-8")
     assert "recursive-include skills *.md *.yaml" in manifest
+
+
+def test_npm_package_exposes_skillshield_binary_and_files() -> None:
+    package = json.loads(Path("package.json").read_text(encoding="utf-8"))
+    assert package["name"] == "skill-shield"
+    assert package["version"] == "0.1.0"
+    assert package["bin"]["skillshield"] == "bin/skillshield.js"
+    assert package["files"] == [
+        "bin/",
+        "src/skillshield/*.py",
+        "src/skillshield/data/*.py",
+        "src/skillshield/data/*.toml",
+        "skills/",
+        "docs/",
+        "research/",
+        "README.md",
+        "pyproject.toml",
+        "MANIFEST.in",
+    ]
+
+
+def test_npm_binary_runs_skillshield_help() -> None:
+    completed = subprocess.run(
+        ["node", "bin/skillshield.js", "--help"],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert "Scan Agent Skill packages" in completed.stdout
 
 
 def test_discovery_keyword_stuffing_reports_lifecycle_stage() -> None:
