@@ -196,8 +196,45 @@ def test_llm_prompt_cli_outputs_codex_review_packet(capsys) -> None:
     assert payload["execution_allowed"] is False
     assert payload["scan"]["max_severity"] == "critical"
     assert "intent_alignment" in payload["review_tasks"]
+    assert payload["response_schema"]["required"] == [
+        "final_verdict",
+        "task_results",
+        "evidence",
+        "unresolved_questions",
+    ]
+    assert "hold_for_human_review" in payload["response_schema"]["properties"]["final_verdict"]["enum"]
     assert "Do not execute" in payload["prompt"]
     assert "critical static findings" in payload["prompt"]
+
+
+def test_llm_schema_cli_outputs_prompt_and_response_contract(capsys) -> None:
+    exit_code = main(["llm", "schema"])
+    captured = capsys.readouterr()
+    payload = json.loads(captured.out)
+    assert exit_code == 0
+    assert payload["name"] == "skillshield-llm-review-prompt-contract"
+    assert payload["packet_schema"]["required"] == [
+        "schema_version",
+        "name",
+        "target",
+        "root",
+        "network_enabled",
+        "execution_allowed",
+        "review_tasks",
+        "safety_rules",
+        "scan",
+        "response_schema",
+        "prompt",
+    ]
+    assert set(payload["packet_schema"]["properties"]["target"]["enum"]) == {
+        "codex",
+        "claude-code",
+        "generic",
+    }
+    response_schema = payload["response_schema"]
+    assert "task_results" in response_schema["required"]
+    task_item = response_schema["properties"]["task_results"]["items"]
+    assert set(task_item["properties"]["task_id"]["enum"]) == set(LAYER2_TASK_IDS)
 
 
 def test_llm_prompt_cli_outputs_claude_code_markdown_packet(capsys) -> None:
@@ -215,6 +252,8 @@ def test_llm_prompt_cli_outputs_claude_code_markdown_packet(capsys) -> None:
     assert "# SkillShield LLM Review Packet" in captured.out
     assert "Target agent: claude-code" in captured.out
     assert "SS150" in captured.out
+    assert "## Response Schema" in captured.out
+    assert '"final_verdict"' in captured.out
     assert "Return JSON" in captured.out
 
 
@@ -226,6 +265,8 @@ def test_agent_skill_adapter_is_installable_and_mentions_codex_and_claude_code()
     assert "Codex" in text
     assert "Claude Code" in text
     assert "skillshield llm prompt" in text
+    assert "skillshield llm schema" in text
+    assert "response_schema" in text
     assert "Do not execute" in text
 
 
@@ -334,6 +375,8 @@ def test_readme_separates_cli_only_and_skill_assisted_llm_review() -> None:
     readme = Path("README.md").read_text(encoding="utf-8")
     assert "CLI-only mode" in readme
     assert "Skill-assisted LLM review" in readme
+    assert "skillshield llm schema" in readme
+    assert "response_schema" in readme
     assert "skillshield llm prompt" in readme
     assert "skills/skillshield-review" in readme
     assert "Claude Code" in readme

@@ -8,7 +8,7 @@ from pathlib import Path
 from .config import load_scan_config, resolve_scan_options
 from .evaluation import run_evaluation
 from .jury import FakeJuryProvider, jury_schema, run_fake_jury_for_path
-from .llm_review import LLM_TARGETS, build_llm_review_packet, render_llm_review_packet
+from .llm_review import LLM_TARGETS, build_llm_review_packet, llm_prompt_schema, render_llm_review_packet
 from .manifest import suggest_manifest
 from .reporters import render_json, render_sarif, render_text
 from .risk_graph import build_risk_graph
@@ -59,6 +59,7 @@ def build_parser() -> argparse.ArgumentParser:
     jury_review.add_argument("--provider", choices=("fake",), default="fake")
     llm = subparsers.add_parser("llm", help="Build safe LLM review packets from static scan evidence.")
     llm_subparsers = llm.add_subparsers(dest="llm_command", required=True)
+    llm_subparsers.add_parser("schema", help="Print the LLM review packet and response JSON schemas.")
     llm_prompt = llm_subparsers.add_parser("prompt", help="Emit a Codex/Claude Code review packet.")
     llm_prompt.add_argument("path", type=Path)
     llm_prompt.add_argument("--target", choices=LLM_TARGETS, default="generic")
@@ -133,6 +134,9 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "llm" and args.llm_command == "prompt":
         packet = build_llm_review_packet(args.path, target=args.target)
         print(render_llm_review_packet(packet, args.format))
+        return 0
+    if args.command == "llm" and args.llm_command == "schema":
+        print(json.dumps(llm_prompt_schema(), indent=2, ensure_ascii=False))
         return 0
     if args.command == "graph":
         print(json.dumps(build_risk_graph(args.path), indent=2, ensure_ascii=False))

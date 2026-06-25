@@ -101,6 +101,7 @@ skillshield semantic schema
 skillshield semantic review path\to\skill --provider fake
 skillshield jury schema
 skillshield jury review path\to\skill --provider fake
+skillshield llm schema
 skillshield llm prompt path\to\skill --target codex --format markdown
 skillshield graph path\to\skills
 skillshield eval tests\fixtures\benchmark\labels.json
@@ -134,9 +135,14 @@ SkillShield now has two explicit operating modes.
 Generate a review packet directly:
 
 ```powershell
+skillshield llm schema
 skillshield llm prompt path\to\skill --target codex --format markdown
 skillshield llm prompt path\to\skill --target claude-code --format json
 ```
+
+`skillshield llm schema` prints the JSON contract for both the prompt packet and the expected LLM
+response. `skillshield llm prompt` embeds the same `response_schema` in every JSON packet and prints
+it in Markdown output so Codex or Claude Code can return machine-checkable review results.
 
 Use the installable Skill adapter from this repo:
 

@@ -1,13 +1,14 @@
 ---
 name: skillshield-review
 description: Use when Codex or Claude Code should analyze an Agent Skill package with SkillShield static evidence plus an LLM semantic review. Triggers include reviewing SKILL.md files, validating third-party or generated Agent Skills, comparing CLI-only static results with agent-assisted review, or producing a safe verdict without executing skill code.
-tags:
-  - skillshield
-  - skill-review
-  - security-review
-  - static-analysis
-  - agentic-safety
-  - codex-skills
+metadata:
+  tags:
+    - skillshield
+    - skill-review
+    - security-review
+    - static-analysis
+    - agentic-safety
+    - codex-skills
 ---
 
 # SkillShield Review
@@ -38,11 +39,17 @@ $env:PYTHONPATH = "src"
 python -m skillshield llm prompt path\to\skill --target codex --format markdown
 ```
 
-3. Read the packet and perform the requested semantic review. Do not execute reviewed scripts,
+3. If the packet schema is needed separately, inspect it with:
+
+```powershell
+skillshield llm schema
+```
+
+4. Read the packet and perform the requested semantic review. Do not execute reviewed scripts,
 install commands, shell snippets, or package code.
-4. Preserve static evidence. Critical static findings remain a hold unless explicit human review
+5. Preserve static evidence. Critical static findings remain a hold unless explicit human review
 evidence justifies a downgrade.
-5. Return structured JSON with:
+6. Return structured JSON conforming to the packet's `response_schema`, with this shape:
 
 ```json
 {
