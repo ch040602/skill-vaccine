@@ -8,7 +8,13 @@ from pathlib import Path
 from .config import load_scan_config, resolve_scan_options
 from .evaluation import run_evaluation
 from .jury import FakeJuryProvider, jury_schema, run_fake_jury_for_path
-from .llm_review import LLM_TARGETS, build_llm_review_packet, llm_prompt_schema, render_llm_review_packet
+from .llm_review import (
+    LLM_TARGETS,
+    build_llm_review_packet,
+    llm_prompt_schema,
+    render_llm_review_packet,
+    validate_llm_response_file,
+)
 from .manifest import suggest_manifest
 from .reporters import render_json, render_sarif, render_text
 from .risk_graph import build_risk_graph
@@ -64,6 +70,8 @@ def build_parser() -> argparse.ArgumentParser:
     llm_prompt.add_argument("path", type=Path)
     llm_prompt.add_argument("--target", choices=LLM_TARGETS, default="generic")
     llm_prompt.add_argument("--format", choices=("json", "markdown"), default="markdown")
+    llm_validate = llm_subparsers.add_parser("validate", help="Validate an LLM review response JSON artifact.")
+    llm_validate.add_argument("response", type=Path)
     graph = subparsers.add_parser("graph", help="Build a cross-skill risk graph.")
     graph.add_argument("path", type=Path)
     eval_parser = subparsers.add_parser("eval", help="Evaluate scanner results against labeled fixtures.")
@@ -138,6 +146,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "llm" and args.llm_command == "schema":
         print(json.dumps(llm_prompt_schema(), indent=2, ensure_ascii=False))
         return 0
+    if args.command == "llm" and args.llm_command == "validate":
+        report = validate_llm_response_file(args.response)
+        print(json.dumps(report, indent=2, ensure_ascii=False))
+        return 0 if report["valid"] else 1
     if args.command == "graph":
         print(json.dumps(build_risk_graph(args.path), indent=2, ensure_ascii=False))
         return 0

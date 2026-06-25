@@ -148,6 +148,113 @@ def llm_response_schema() -> dict[str, Any]:
     }
 
 
+def validate_llm_response_file(response_path: Path) -> dict[str, Any]:
+    try:
+        response = json.loads(response_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as error:
+        return _validation_report(response_path, [f"invalid JSON: {error.msg}"])
+    except OSError as error:
+        return _validation_report(response_path, [f"cannot read response file: {error}"])
+    return validate_llm_response(response, response_path=response_path)
+
+
+def validate_llm_response(response: Any, response_path: Path | None = None) -> dict[str, Any]:
+    errors: list[str] = []
+    if not isinstance(response, dict):
+        errors.append("response must be an object")
+        return _validation_report(response_path, errors)
+
+    _require_fields(response, llm_response_schema()["required"], errors)
+    verdict = response.get("final_verdict")
+    if verdict is not None:
+        _validate_enum(
+            verdict,
+            ["safe", "conditional", "malicious", "hold_for_human_review"],
+            "final_verdict",
+            errors,
+        )
+
+    task_results = response.get("task_results")
+    if task_results is not None:
+        if not isinstance(task_results, list):
+            errors.append("task_results must be an array")
+        else:
+            for index, task_result in enumerate(task_results):
+                _validate_task_result(task_result, index, errors)
+
+    if "evidence" in response and not isinstance(response["evidence"], list):
+        errors.append("evidence must be an array")
+    if "unresolved_questions" in response:
+        questions = response["unresolved_questions"]
+        if not isinstance(questions, list):
+            errors.append("unresolved_questions must be an array")
+        elif not all(isinstance(question, str) for question in questions):
+            errors.append("unresolved_questions items must be strings")
+    return _validation_report(response_path, errors)
+
+
+def _validate_task_result(task_result: Any, index: int, errors: list[str]) -> None:
+    prefix = f"task_results[{index}]"
+    if not isinstance(task_result, dict):
+        errors.append(f"{prefix} must be an object")
+        return
+    _require_fields(
+        task_result,
+        ["task_id", "rating", "risk_score", "evidence", "reason_codes"],
+        errors,
+        prefix=prefix,
+    )
+    task_id = task_result.get("task_id")
+    if task_id is not None:
+        _validate_enum(task_id, list(LAYER2_TASK_IDS), f"{prefix}.task_id", errors)
+    rating = task_result.get("rating")
+    if rating is not None:
+        _validate_enum(rating, ["safe", "suspicious", "malicious", "unknown"], f"{prefix}.rating", errors)
+    risk_score = task_result.get("risk_score")
+    if risk_score is not None:
+        if not isinstance(risk_score, int | float) or isinstance(risk_score, bool):
+            errors.append(f"{prefix}.risk_score must be a number")
+        elif not 0.0 <= float(risk_score) <= 1.0:
+            errors.append(f"{prefix}.risk_score must be between 0.0 and 1.0")
+    if "evidence" in task_result and not isinstance(task_result["evidence"], list):
+        errors.append(f"{prefix}.evidence must be an array")
+    if "reason_codes" in task_result:
+        reason_codes = task_result["reason_codes"]
+        if not isinstance(reason_codes, list):
+            errors.append(f"{prefix}.reason_codes must be an array")
+        elif not all(isinstance(reason_code, str) for reason_code in reason_codes):
+            errors.append(f"{prefix}.reason_codes items must be strings")
+
+
+def _require_fields(
+    value: dict[str, Any],
+    required_fields: list[str],
+    errors: list[str],
+    prefix: str | None = None,
+) -> None:
+    for field in required_fields:
+        if field not in value:
+            location = f"{prefix} missing required field" if prefix else "missing required field"
+            errors.append(f"{location}: {field}")
+
+
+def _validate_enum(value: Any, allowed: list[str], field: str, errors: list[str]) -> None:
+    if value not in allowed:
+        errors.append(f"{field} must be one of: {', '.join(allowed)}")
+
+
+def _validation_report(response_path: Path | None, errors: list[str]) -> dict[str, Any]:
+    report: dict[str, Any] = {
+        "schema_version": 1,
+        "name": "skillshield-llm-response-validation",
+        "valid": not errors,
+        "errors": errors,
+    }
+    if response_path is not None:
+        report["response_path"] = str(response_path)
+    return report
+
+
 def _build_prompt(packet: dict[str, Any]) -> str:
     target = packet["target"]
     scan = packet["scan"]

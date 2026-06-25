@@ -237,6 +237,90 @@ def test_llm_schema_cli_outputs_prompt_and_response_contract(capsys) -> None:
     assert set(task_item["properties"]["task_id"]["enum"]) == set(LAYER2_TASK_IDS)
 
 
+def test_llm_validate_accepts_response_matching_schema(capsys) -> None:
+    response_dir = Path(".pytest-local") / "llm_validate"
+    shutil.rmtree(response_dir, ignore_errors=True)
+    response_dir.mkdir(parents=True)
+    response_file = response_dir / "valid_response.json"
+    try:
+        response_file.write_text(
+            json.dumps(
+                {
+                    "final_verdict": "hold_for_human_review",
+                    "task_results": [
+                        {
+                            "task_id": "intent_alignment",
+                            "rating": "suspicious",
+                            "risk_score": 0.6,
+                            "evidence": [
+                                {
+                                    "path": "SKILL.md",
+                                    "line": 8,
+                                    "rule_id": "SS001",
+                                    "quote_or_summary": "prompt injection directive",
+                                    "reason": "static finding requires review",
+                                }
+                            ],
+                            "reason_codes": ["critical_static_finding"],
+                        }
+                    ],
+                    "evidence": [],
+                    "unresolved_questions": [],
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        exit_code = main(["llm", "validate", str(response_file)])
+        captured = capsys.readouterr()
+        payload = json.loads(captured.out)
+
+        assert exit_code == 0
+        assert payload["valid"] is True
+        assert payload["errors"] == []
+        assert payload["response_path"] == str(response_file)
+    finally:
+        shutil.rmtree(response_dir.parent, ignore_errors=True)
+
+
+def test_llm_validate_rejects_response_missing_required_fields(capsys) -> None:
+    response_dir = Path(".pytest-local") / "llm_validate_invalid"
+    shutil.rmtree(response_dir, ignore_errors=True)
+    response_dir.mkdir(parents=True)
+    response_file = response_dir / "invalid_response.json"
+    try:
+        response_file.write_text(
+            json.dumps(
+                {
+                    "final_verdict": "safe",
+                    "task_results": [
+                        {
+                            "task_id": "not_a_task",
+                            "rating": "safe",
+                            "risk_score": 1.2,
+                            "evidence": [],
+                        }
+                    ],
+                    "evidence": [],
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        exit_code = main(["llm", "validate", str(response_file)])
+        captured = capsys.readouterr()
+        payload = json.loads(captured.out)
+
+        assert exit_code == 1
+        assert payload["valid"] is False
+        assert "missing required field: unresolved_questions" in payload["errors"]
+        assert "task_results[0].task_id must be one of" in "\n".join(payload["errors"])
+        assert "task_results[0].risk_score must be between 0.0 and 1.0" in payload["errors"]
+        assert "task_results[0] missing required field: reason_codes" in payload["errors"]
+    finally:
+        shutil.rmtree(response_dir.parent, ignore_errors=True)
+
+
 def test_llm_prompt_cli_outputs_claude_code_markdown_packet(capsys) -> None:
     exit_code = main([
         "llm",
@@ -266,6 +350,7 @@ def test_agent_skill_adapter_is_installable_and_mentions_codex_and_claude_code()
     assert "Claude Code" in text
     assert "skillshield llm prompt" in text
     assert "skillshield llm schema" in text
+    assert "skillshield llm validate" in text
     assert "response_schema" in text
     assert "Do not execute" in text
 
@@ -378,6 +463,7 @@ def test_readme_separates_cli_only_and_skill_assisted_llm_review() -> None:
     assert "skillshield llm schema" in readme
     assert "response_schema" in readme
     assert "skillshield llm prompt" in readme
+    assert "skillshield llm validate" in readme
     assert "skills/skillshield-review" in readme
     assert "Claude Code" in readme
 

@@ -103,6 +103,7 @@ skillshield jury schema
 skillshield jury review path\to\skill --provider fake
 skillshield llm schema
 skillshield llm prompt path\to\skill --target codex --format markdown
+skillshield llm validate llm-response.json
 skillshield graph path\to\skills
 skillshield eval tests\fixtures\benchmark\labels.json
 skillshield telemetry schema
@@ -138,11 +139,14 @@ Generate a review packet directly:
 skillshield llm schema
 skillshield llm prompt path\to\skill --target codex --format markdown
 skillshield llm prompt path\to\skill --target claude-code --format json
+skillshield llm validate llm-response.json
 ```
 
 `skillshield llm schema` prints the JSON contract for both the prompt packet and the expected LLM
 response. `skillshield llm prompt` embeds the same `response_schema` in every JSON packet and prints
 it in Markdown output so Codex or Claude Code can return machine-checkable review results.
+`skillshield llm validate` checks a saved LLM response artifact against that contract and exits
+non-zero when required fields, enum values, score ranges, or array fields are invalid.
 
 Use the installable Skill adapter from this repo:
 
