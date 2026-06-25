@@ -1,11 +1,15 @@
 # SkillShield
 
-Dependency-free scanner for Agent Skill packages. SkillShield checks `SKILL.md`, referenced files,
-metadata, capability claims, and cross-skill combinations before an agent or registry trusts a skill.
+SkillShield is **not** an Agent Skill and it is **not** an LLM wrapper.
+
+It is a dependency-free Python CLI/package that scans Agent Skill packages. SkillShield checks
+`SKILL.md`, referenced files, metadata, capability claims, and cross-skill combinations before an
+agent, CI job, registry, or marketplace review process trusts a skill.
 
 ## Contents
 
 - [Why](#why)
+- [What This Is](#what-this-is)
 - [Install](#install)
 - [Quick Start](#quick-start)
 - [Outputs](#outputs)
@@ -30,6 +34,22 @@ Current checks cover:
 - registry metadata provenance gaps
 - cross-file hidden capabilities and cross-skill risk graph links
 - semantic review coverage gaps and provider-neutral Layer 2/Layer 3 contracts
+
+## What This Is
+
+SkillShield is a scanner for skills, not a skill itself.
+
+| Question | Answer |
+| --- | --- |
+| Is this repo a Codex/Agent Skill? | No. It does not expose a root `SKILL.md` for installation as a skill. |
+| Does the scanner call an LLM by default? | No. The default scanner is static, local, and dependency-free. |
+| What are the semantic and jury commands? | Provider-neutral schemas and deterministic fake-provider test harnesses. |
+| What does it scan? | Agent Skill folders, including `SKILL.md`, helper scripts, metadata, config, and related packages. |
+| Who is it for? | Developers, CI pipelines, registries, and marketplace reviewers evaluating third-party or generated skills. |
+
+The Layer 2 semantic review and Layer 3 jury pieces are contracts for future model-backed review.
+They currently use local fake providers for interface testing and do not send data to any external
+model API.
 
 ## Install
 
