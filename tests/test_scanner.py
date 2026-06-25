@@ -345,8 +345,11 @@ def test_llm_prompt_cli_outputs_claude_code_markdown_packet(capsys) -> None:
 def test_agent_skill_adapter_is_installable_and_mentions_codex_and_claude_code() -> None:
     skill_md = Path("skills/skillshield-review/SKILL.md")
     text = skill_md.read_text(encoding="utf-8")
+    frontmatter = text.split("---", 2)[1]
     assert "name: skillshield-review" in text
     assert "description:" in text
+    assert "metadata:" not in frontmatter
+    assert "tags:" not in frontmatter
     assert "Codex" in text
     assert "Claude Code" in text
     assert "skillshield llm prompt" in text
@@ -468,7 +471,9 @@ def test_github_action_runs_sarif_scan_command() -> None:
 
 def test_github_workflow_uploads_sarif_output() -> None:
     workflow = Path(".github/workflows/skillshield.yml").read_text(encoding="utf-8")
+    assert "path: skills/skillshield-review" in workflow
     assert "github/codeql-action/upload-sarif@v3" in workflow
+    assert "continue-on-error: true" in workflow
     assert "sarif_file: skillshield.sarif" in workflow
 
 

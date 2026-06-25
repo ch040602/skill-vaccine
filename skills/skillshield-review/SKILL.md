@@ -1,14 +1,6 @@
 ---
 name: skillshield-review
 description: Use when Codex or Claude Code should analyze an Agent Skill package with SkillShield static evidence plus an LLM semantic review. Triggers include reviewing SKILL.md files, validating third-party or generated Agent Skills, comparing CLI-only static results with agent-assisted review, or producing a safe verdict without executing skill code.
-metadata:
-  tags:
-    - skillshield
-    - skill-review
-    - security-review
-    - static-analysis
-    - agentic-safety
-    - codex-skills
 ---
 
 # SkillShield Review
