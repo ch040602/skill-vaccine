@@ -1,6 +1,13 @@
 ---
 name: skillshield-review
 description: Use when Codex or Claude Code should analyze an Agent Skill package with SkillShield static evidence plus an LLM semantic review. Triggers include reviewing SKILL.md files, validating third-party or generated Agent Skills, comparing CLI-only static results with agent-assisted review, or producing a safe verdict without executing skill code.
+tags:
+  - skillshield
+  - skill-review
+  - security-review
+  - static-analysis
+  - agentic-safety
+  - codex-skills
 ---
 
 # SkillShield Review
@@ -63,4 +70,3 @@ evidence justifies a downgrade.
   `cross_file_consistency`.
 - Explain disagreements between static evidence and LLM judgment instead of averaging them away.
 - Recommend CLI-only use for deterministic CI gates and Skill use for human-facing semantic review.
-
