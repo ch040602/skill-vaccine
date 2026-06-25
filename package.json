@@ -1,5 +1,5 @@
 {
-  "name": "skill-shield",
+  "name": "@cchsh/skill-shield",
   "version": "0.1.0",
   "description": "Static and semantic-risk scanner for Agent Skills.",
   "license": "MIT",

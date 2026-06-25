@@ -363,7 +363,7 @@ def test_manifest_includes_skill_adapter_files() -> None:
 
 def test_npm_package_exposes_skillshield_binary_and_files() -> None:
     package = json.loads(Path("package.json").read_text(encoding="utf-8"))
-    assert package["name"] == "skill-shield"
+    assert package["name"] == "@cchsh/skill-shield"
     assert package["version"] == "0.1.0"
     assert package["bin"]["skillshield"] == "bin/skillshield.js"
     assert package["files"] == [

@@ -66,7 +66,7 @@ Codex or Claude Code session to perform the semantic review over a bounded evide
 From npm:
 
 ```powershell
-npm install -g skill-shield
+npm install -g @cchsh/skill-shield
 skillshield --help
 ```
 
