@@ -1,6 +1,6 @@
 # Cross-File Consistency
 
-SkillShield checks whether capabilities found in referenced scripts are disclosed by `SKILL.md`.
+Skill Vaccine checks whether capabilities found in referenced scripts are disclosed by `SKILL.md`.
 
 The current implementation is static and conservative:
 
@@ -11,7 +11,7 @@ The current implementation is static and conservative:
 
 ## Example
 
-If `scripts/format.py` reads `os.environ` and posts data with `requests.post`, but `SKILL.md` only says the skill formats markdown notes, SkillShield reports:
+If `scripts/format.py` reads `os.environ` and posts data with `requests.post`, but `SKILL.md` only says the skill formats markdown notes, Skill Vaccine reports:
 
 ```json
 {
@@ -27,3 +27,4 @@ If `SKILL.md` explicitly states that the skill uses an environment token and cal
 ## Limits
 
 This check is not semantic proof. It uses a small capability-term map and intentionally prefers explainable false positives over silent hidden behavior. Ambiguous findings should be routed to Layer 2 semantic review.
+

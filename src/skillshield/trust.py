@@ -106,7 +106,7 @@ def trust_profiles() -> tuple[TrustProfile, ...]:
 def trust_profile_schema() -> dict[str, Any]:
     return {
         "schema_version": 1,
-        "name": "skillshield-trust-tier-profiles",
+        "name": "skill-vaccine-trust-tier-profiles",
         "profiles": [profile.to_dict() for profile in TRUST_PROFILES],
         "tier_order": [profile.id for profile in TRUST_PROFILES],
         "notes": [
@@ -141,3 +141,4 @@ def _active_capabilities(result: ScanResult) -> set[str]:
         if finding.capability and not finding.suppressed
     )
     return capabilities
+

@@ -9,10 +9,10 @@ BASE_REQUIRED_FIELDS = ("event_id", "timestamp", "skill_id", "session_id")
 def telemetry_schema() -> dict[str, Any]:
     return {
         "schema_version": 1,
-        "name": "skillshield-local-usage-adherence-events",
+        "name": "skill-vaccine-local-usage-adherence-events",
         "description": (
             "Local artifact schema for evaluating whether an agent selected, read, and followed "
-            "a skill. SkillShield does not collect these events automatically."
+            "a skill. Skill Vaccine does not collect these events automatically."
         ),
         "automatic_collection": False,
         "local_artifact_only": True,
@@ -76,3 +76,4 @@ def _event_type(event_id: str, description: str, required: tuple[str, ...]) -> d
             "reason": {"type": "string"},
         },
     }
+

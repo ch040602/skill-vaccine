@@ -1,5 +1,5 @@
-name: SkillShield Scan
-description: Scan Agent Skill packages and write SARIF output.
+name: Skill Vaccine Scan
+description: Cut through risky Agent Skill packages and write SARIF output.
 
 inputs:
   path:
@@ -13,7 +13,7 @@ inputs:
   sarif-file:
     description: Path where SARIF output will be written.
     required: false
-    default: skillshield.sarif
+    default: skill-vaccine-review.sarif
 
 outputs:
   sarif-file:
@@ -23,10 +23,11 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Install SkillShield
+    - name: Install Skill Vaccine
       shell: bash
       run: python -m pip install .
-    - name: Run SkillShield SARIF scan
+    - name: Run Skill Vaccine SARIF scan
       shell: bash
       run: |
-        skillshield scan "${{ inputs.path }}" --format sarif --fail-on "${{ inputs.fail-on }}" > "${{ inputs.sarif-file }}"
+        skill-vaccine scan "${{ inputs.path }}" --format sarif --fail-on "${{ inputs.fail-on }}" > "${{ inputs.sarif-file }}"
+

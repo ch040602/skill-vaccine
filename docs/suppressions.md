@@ -1,9 +1,9 @@
 # Suppressions
 
-SkillShield supports config-based suppressions for expected false positives:
+Skill Vaccine supports config-based suppressions for expected false positives:
 
 ```powershell
-python -m skillshield scan path\to\skill --config skillshield.json --format json
+skill-vaccine scan path\to\skill --config skill-vaccine.json --format json
 ```
 
 Example config:
@@ -46,3 +46,4 @@ Critical findings are not suppressed unless the config explicitly opts in:
 ```
 
 Use critical suppressions sparingly. They should be reviewed as policy exceptions, not as ordinary lint ignores.
+

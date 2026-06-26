@@ -1,1 +1,2 @@
-"""Packaged SkillShield rule data."""
+"""Packaged Skill Vaccine rule data."""
+

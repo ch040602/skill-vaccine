@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "created_at": "2026-06-25T16:05:00+09:00",
-  "question": "Which under-served Agent Skill project should be built for broad GitHub adoption, and how should SkillShield be developed from the relevant research?",
+  "question": "Which under-served Agent Skill project should be built for broad GitHub adoption, and how should Skill Vaccine be developed from the relevant research?",
   "mode": "portable_google_agentic_rag_pattern",
   "orchestrator": {
     "status": "completed",
@@ -71,7 +71,7 @@
   "retrieval_plan": {
     "required_facts": [
       {"id": "F1", "description": "Evidence that Agent Skill security is a large and underserved problem.", "priority": "must"},
-      {"id": "F2", "description": "Detection architecture suitable for SkillShield MVP and later high-recall semantic review.", "priority": "must"},
+      {"id": "F2", "description": "Detection architecture suitable for Skill Vaccine MVP and later high-recall semantic review.", "priority": "must"},
       {"id": "F3", "description": "Permission/capability governance requirements for skill artifacts.", "priority": "must"},
       {"id": "F4", "description": "Registry, conformance, and evaluation features that improve adoption and trust.", "priority": "should"},
       {"id": "F5", "description": "Known limitations and follow-up work that should become RDD TODOs.", "priority": "must"}
@@ -111,7 +111,7 @@
   ],
   "draft_answer": {
     "status": "draft_from_retrieved_snippets",
-    "summary": "SkillShield is justified as a local-first Agent Skill security and governance scanner. The MVP should start with static Layer 1 scanning, structured outputs, and permission inference, while preserving TODOs for semantic review, jury review, manifest policy, cross-skill risk graphs, conformance, and evaluation hooks."
+    "summary": "Skill Vaccine is justified as a local-first Agent Skill security and governance scanner. The MVP should start with static Layer 1 scanning, structured outputs, and permission inference, while preserving TODOs for semantic review, jury review, manifest policy, cross-skill risk graphs, conformance, and evaluation hooks."
   },
   "context_assessment": {
     "status": "sufficient",
@@ -145,7 +145,7 @@
   ],
   "grounded_answer": {
     "status": "answered",
-    "answer": "SkillShield should be developed as a local-first Agent Skill scanner with static Layer 1 detection, structured JSON/SARIF output, capability inference, manifest suggestions, and a staged roadmap for semantic review, jury review, permission governance, cross-skill risk graphs, conformance, and evaluation.",
+    "answer": "Skill Vaccine should be developed as a local-first Agent Skill scanner with static Layer 1 detection, structured JSON/SARIF output, capability inference, manifest suggestions, and a staged roadmap for semantic review, jury review, permission governance, cross-skill risk graphs, conformance, and evaluation.",
     "citations": [
       {"claim": "The MVP should start with static Layer 1 detection and later add semantic and jury layers.", "snippet_ids": ["S1", "S4"]},
       {"claim": "Permission/capability inference and manifest suggestions are core to governance.", "snippet_ids": ["S2", "S3"]},
@@ -158,4 +158,5 @@
     ]
   }
 }
+
 

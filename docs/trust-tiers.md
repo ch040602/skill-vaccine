@@ -1,6 +1,6 @@
 # Trust Tier Profiles
 
-SkillShield reports `required_trust_tier` as admission metadata derived from active findings,
+Skill Vaccine reports `required_trust_tier` as admission metadata derived from active findings,
 inferred capabilities, and the scan `verdict`.
 
 `required_trust_tier` does not override `verdict`. A skill with `verdict: rejected` remains blocked by
@@ -10,7 +10,7 @@ operator trust boundary before any separate override policy could consider it.
 Print the built-in profiles:
 
 ```powershell
-python -m skillshield trust profiles
+skill-vaccine trust profiles
 ```
 
 ## Profiles
@@ -82,7 +82,7 @@ Allowed examples:
 
 - `agent.context`
 - `secrets.read`
-- Any capability known to SkillShield.
+- Any capability known to Skill Vaccine.
 
 Required confirmations:
 
@@ -111,3 +111,4 @@ SARIF output includes `runs[0].properties.required_trust_tier`.
 
 Host profiles turn this metadata into environment-specific scan defaults. See
 [host profile policies](host-profiles.md).
+

@@ -9,7 +9,8 @@ from .rule_catalog import regex_text_patterns
 
 TEXT_PATTERNS: tuple[tuple[str, str, str, str, str, str | None], ...] = regex_text_patterns()
 
-SCRIPT_SUFFIXES = {".py", ".ps1", ".sh", ".js", ".ts", ".bat", ".cmd"}
+SCANNED_SUFFIXES = {".py", ".ps1", ".sh", ".js", ".ts", ".bat", ".cmd", ".md", ".mdx", ".markdown"}
+FORMAT_CONTROL_TRANSLATION = {codepoint: None for codepoint in (0x200B, 0x200C, 0x200D, 0xFEFF)}
 
 
 def analyze_skill(package: SkillPackage) -> tuple[list[Finding], set[str]]:
@@ -80,10 +81,11 @@ def _check_frontmatter(package: SkillPackage) -> list[Finding]:
 def _scan_text(path: Path, text: str, root: Path) -> tuple[list[Finding], set[str]]:
     findings: list[Finding] = []
     capabilities: set[str] = set()
+    normalized_text = _normalize_for_matching(text)
     for rule_id, severity, title, pattern, capability, lifecycle_stage in TEXT_PATTERNS:
         regex = re.compile(pattern, re.IGNORECASE | re.DOTALL)
-        for match in regex.finditer(text):
-            line = text.count("\n", 0, match.start()) + 1
+        for match in regex.finditer(normalized_text):
+            line = normalized_text.count("\n", 0, match.start()) + 1
             evidence = " ".join(match.group(0).split())[:180]
             findings.append(
                 Finding(
@@ -101,6 +103,10 @@ def _scan_text(path: Path, text: str, root: Path) -> tuple[list[Finding], set[st
             )
             capabilities.add(capability)
     return findings, capabilities
+
+
+def _normalize_for_matching(text: str) -> str:
+    return text.translate(FORMAT_CONTROL_TRANSLATION)
 
 
 def _check_permission_declarations(package: SkillPackage, capabilities: set[str]) -> list[Finding]:
@@ -200,7 +206,7 @@ def _declared_permissions(package: SkillPackage) -> set[str]:
 
 
 def _should_scan_file(path: Path) -> bool:
-    return path.name == "SKILL.md" or path.suffix.lower() in SCRIPT_SUFFIXES
+    return path.name == "SKILL.md" or path.suffix.lower() in SCANNED_SUFFIXES
 
 
 def _rel(path: Path, root: Path) -> str:

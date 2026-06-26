@@ -25,7 +25,8 @@ jobs:
       - name: Upload distributions
         uses: actions/upload-artifact@v4
         with:
-          name: skillshield-distributions
+          name: skill-vaccine-distributions
           path: |
             dist/*.whl
             dist/*.tar.gz
+

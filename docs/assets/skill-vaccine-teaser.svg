@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc" viewBox="0 0 1200 520">
+  <title id="title">Skill Vaccine Agent Skill safety pipeline</title>
+  <desc id="desc">A Skill Vaccine scan gate showing static evidence, semantic review, verdicts, trust tiers, and safe installation.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#071114"/>
+      <stop offset="0.54" stop-color="#102125"/>
+      <stop offset="1" stop-color="#190f0d"/>
+    </linearGradient>
+    <linearGradient id="shield" x1="0" x2="1">
+      <stop offset="0" stop-color="#11c5d6"/>
+      <stop offset="1" stop-color="#f7b733"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="1200" height="520" rx="28" fill="url(#bg)"/>
+  <g opacity="0.18" stroke="#7fdce5" stroke-width="1">
+    <path d="M0 410 H1200"/>
+    <path d="M0 450 H1200"/>
+    <path d="M0 490 H1200"/>
+    <path d="M120 520 L420 300"/>
+    <path d="M380 520 L560 290"/>
+    <path d="M790 520 L650 290"/>
+    <path d="M1060 520 L790 295"/>
+  </g>
+  <text x="72" y="100" fill="#eefbfc" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="58" font-weight="800">Skill Vaccine</text>
+  <text x="74" y="145" fill="#9fe8ed" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="24" font-weight="600">Scan-gated safety for Agent Skills</text>
+  <text x="74" y="183" fill="#c9d5d7" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="18">Static evidence, semantic review packets, verdicts, trust tiers, and safe installs.</text>
+  <g transform="translate(472 86)" filter="url(#glow)">
+    <path d="M128 0 C186 37 251 48 320 45 V184 C320 280 248 353 160 392 C72 353 0 280 0 184 V45 C69 48 102 37 128 0Z" fill="#102a30" stroke="url(#shield)" stroke-width="6"/>
+    <path d="M160 83 L227 124 V204 C227 256 199 294 160 318 C121 294 93 256 93 204 V124Z" fill="#0f5960" stroke="#9ff2ef" stroke-width="4"/>
+    <path d="M133 199 L154 220 L194 164" fill="none" stroke="#7df29a" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g font-family="Inter, Segoe UI, Arial, sans-serif" font-size="18" font-weight="700">
+    <g transform="translate(76 242)">
+      <rect width="270" height="64" rx="12" fill="#10242a" stroke="#20c7d8" stroke-width="2"/>
+      <circle cx="34" cy="32" r="9" fill="#20c7d8"/>
+      <text x="58" y="39" fill="#edf8f9">Static SKILL.md analysis</text>
+    </g>
+    <g transform="translate(76 330)">
+      <rect width="270" height="64" rx="12" fill="#10242a" stroke="#f0b02e" stroke-width="2"/>
+      <circle cx="34" cy="32" r="9" fill="#f0b02e"/>
+      <text x="58" y="39" fill="#edf8f9">Capability risk graph</text>
+    </g>
+    <g transform="translate(854 242)">
+      <rect width="270" height="64" rx="12" fill="#10242a" stroke="#7ce38b" stroke-width="2"/>
+      <circle cx="34" cy="32" r="9" fill="#7ce38b"/>
+      <text x="58" y="39" fill="#edf8f9">Verdicts and trust tiers</text>
+    </g>
+    <g transform="translate(854 330)">
+      <rect width="270" height="64" rx="12" fill="#10242a" stroke="#ff6b4a" stroke-width="2"/>
+      <circle cx="34" cy="32" r="9" fill="#ff6b4a"/>
+      <text x="58" y="39" fill="#edf8f9">Safe install gate</text>
+    </g>
+  </g>
+  <g fill="none" stroke-linecap="round" stroke-width="4" opacity="0.9">
+    <path d="M346 274 C405 274 412 196 474 196" stroke="#20c7d8"/>
+    <path d="M346 362 C420 362 408 258 474 258" stroke="#f0b02e"/>
+    <path d="M854 274 C794 274 790 196 792 196" stroke="#7ce38b"/>
+    <path d="M854 362 C792 362 785 258 792 258" stroke="#ff6b4a"/>
+  </g>
+  <g font-family="Inter, Segoe UI, Arial, sans-serif" font-size="15" font-weight="700">
+    <rect x="302" y="448" width="596" height="42" rx="21" fill="#0b171a" stroke="#6c7c7f"/>
+    <text x="334" y="475" fill="#20c7d8">Prompt injection</text>
+    <text x="486" y="475" fill="#f0b02e">Secret exfiltration</text>
+    <text x="664" y="475" fill="#7ce38b">SARIF</text>
+    <text x="738" y="475" fill="#ff6b4a">Codex / Claude Code</text>
+  </g>
+</svg>

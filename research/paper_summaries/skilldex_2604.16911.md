@@ -26,9 +26,10 @@ Skilldex는 skill ecosystem에 package manager와 registry가 필요하며, Anth
 - registry metadata가 악의적으로 조작될 수 있다.
 - line-level diagnostics가 semantic risk를 모두 포착하지는 못한다.
 
-## SkillShield 반영
+## Skill Vaccine 반영
 
 - `SS100`, `SS101`, `SS102` conformance diagnostics.
 - `--metadata-audit`, `SS150`-`SS153`.
 - SARIF/JSON output으로 registry와 CI가 소비 가능한 diagnostic 제공.
 - 후속 TODO: rule rationale docs, package/release automation.
+

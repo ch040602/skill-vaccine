@@ -1,4 +1,4 @@
-name: SkillShield
+name: Skill Vaccine
 
 on:
   pull_request:
@@ -17,15 +17,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-      - name: Run SkillShield
+      - name: Run Skill Vaccine
         uses: ./
         with:
-          path: skills/skillshield-review
+          path: skills/skill-vaccine-review
           fail-on: critical
-          sarif-file: skillshield.sarif
+          sarif-file: skill-vaccine-review.sarif
       - name: Upload SARIF
         uses: github/codeql-action/upload-sarif@v3
         if: always()
         continue-on-error: true
         with:
-          sarif_file: skillshield.sarif
+          sarif_file: skill-vaccine-review.sarif
+

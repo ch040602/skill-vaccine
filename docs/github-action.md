@@ -1,13 +1,13 @@
 # GitHub Action
 
-SkillShield includes a composite action that installs the local package and writes SARIF output:
+Skill Vaccine includes a composite action that installs the local package and writes SARIF output:
 
 ```yaml
 - uses: ./
   with:
     path: .
     fail-on: critical
-    sarif-file: skillshield.sarif
+    sarif-file: skill-vaccine-review.sarif
 ```
 
 Upload the generated SARIF in the workflow:
@@ -16,13 +16,14 @@ Upload the generated SARIF in the workflow:
 - uses: github/codeql-action/upload-sarif@v3
   if: always()
   with:
-    sarif_file: skillshield.sarif
+    sarif_file: skill-vaccine-review.sarif
 ```
 
-The repository workflow at `.github/workflows/skillshield.yml` shows a complete pull request and main-branch example.
+The repository workflow at `.github/workflows/skill-vaccine.yml` shows a complete pull request and main-branch example.
 
 ## Notes
 
-- The action runs `skillshield scan --format sarif`.
+- The action runs `skill-vaccine scan --format sarif`.
 - `fail-on` controls the scanner exit threshold.
 - SARIF upload is kept in the workflow so repository permissions are explicit through `security-events: write`.
+

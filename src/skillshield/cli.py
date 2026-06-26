@@ -7,6 +7,7 @@ from pathlib import Path
 
 from .config import load_scan_config, resolve_scan_options
 from .evaluation import run_evaluation
+from .installer import InstallError, install_skill
 from .jury import FakeJuryProvider, jury_schema, run_fake_jury_for_path
 from .llm_review import (
     LLM_TARGETS,
@@ -27,7 +28,10 @@ from .trust import trust_profile_schema
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="skillshield", description="Scan Agent Skill packages.")
+    parser = argparse.ArgumentParser(
+        prog="skill-vaccine",
+        description="Scan-gated safety for Agent Skills before they reach Codex, Claude Code, CI, or a registry.",
+    )
     subparsers = parser.add_subparsers(dest="command", required=True)
     scan = subparsers.add_parser("scan", help="Scan a skill folder or tree.")
     scan.add_argument("path", type=Path)
@@ -46,6 +50,20 @@ def build_parser() -> argparse.ArgumentParser:
         help="Add registry/package metadata audit findings.",
     )
     scan.add_argument("--config", type=Path, help="Optional JSON/TOML scan config.")
+    install = subparsers.add_parser("install", help="Scan one Agent Skill package, then install it if it passes.")
+    install.add_argument("path", type=Path)
+    install.add_argument(
+        "--skills-dir",
+        type=Path,
+        help="Codex skills directory. Defaults to CODEX_HOME\\skills or ~/.codex/skills.",
+    )
+    install.add_argument("--format", choices=("text", "json"), default="text")
+    install.add_argument(
+        "--fail-on",
+        choices=("low", "medium", "high", "critical"),
+        default="high",
+        help="Block installation when max severity is at or above this threshold.",
+    )
     manifest = subparsers.add_parser("manifest", help="Work with permission manifests.")
     manifest_subparsers = manifest.add_subparsers(dest="manifest_command", required=True)
     suggest = manifest_subparsers.add_parser("suggest", help="Suggest permissions from scan evidence.")
@@ -115,6 +133,17 @@ def main(argv: list[str] | None = None) -> int:
         else:
             print(render_text(result))
         return 1 if _should_fail(result.max_severity, options.fail_on) else 0
+    if args.command == "install":
+        try:
+            report = install_skill(args.path, skills_dir=args.skills_dir, fail_on=args.fail_on)
+        except InstallError as error:
+            parser.error(str(error))
+        payload = report.to_dict()
+        if args.format == "json":
+            print(json.dumps(payload, indent=2, ensure_ascii=False))
+        else:
+            print(_render_install_text(payload))
+        return 1 if report.blocked else 0
     if args.command == "manifest" and args.manifest_command == "suggest":
         result = scan_path(args.path)
         suggestion = suggest_manifest(result)
@@ -192,5 +221,19 @@ def _render_manifest_text(suggestion: dict) -> str:
     return "\n".join(lines)
 
 
+def _render_install_text(report: dict) -> str:
+    lines = [
+        f"skill-vaccine install: {report['source']}",
+        f"Skill: {report['skill_name']}",
+        f"Destination: {report['destination']}",
+        f"Max severity: {report['scan']['max_severity']}",
+        f"Verdict: {report['scan']['verdict']}",
+        f"Installed: {'yes' if report['installed'] else 'no'}",
+        f"Reason: {report['reason']}",
+    ]
+    return "\n".join(lines)
+
+
 if __name__ == "__main__":
     sys.exit(main())
+

@@ -1,13 +1,13 @@
 # Host Profile Policies
 
-Host profiles select scan defaults for the environment running SkillShield. They make
+Host profiles select scan defaults for the environment running Skill Vaccine. They make
 `required_trust_tier` and `verdict` actionable without hiding findings or granting runtime
 permission.
 
 Print the built-in profile schema:
 
 ```powershell
-python -m skillshield trust host-profiles
+skill-vaccine trust host-profiles
 ```
 
 ## Precedence
@@ -46,3 +46,4 @@ uses the explicit CLI threshold.
 - Host profiles do not suppress findings.
 - Host profiles do not grant filesystem, network, shell, browser, or model permissions.
 - Host profiles do not let trust tier output downgrade a rejected verdict.
+

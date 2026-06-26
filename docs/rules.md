@@ -1,12 +1,12 @@
 # Rule Reference
 
-This document explains why each implemented SkillShield rule exists, what kind of evidence it uses, and how to fix or review a finding.
+This document explains why each implemented Skill Vaccine rule exists, what kind of evidence it uses, and how to fix or review a finding.
 
 Rule metadata is packaged in `skillshield/data/rules.toml` and loaded with `importlib.resources`. Regex-backed static rules use the catalog's `pattern` field as their evidence extractor; structural, metadata, permission, cross-file, semantic-routing, and semantic-coverage rules use explicit scanner code but still carry cataloged severity, capability, source, and rationale metadata.
 
 ## Static certainty vs semantic suspicion
 
-Static rules identify textual or structural evidence. SkillShield does not execute skill scripts during scanning. A static match is not always proof of exploitability, but it is enough to require review when the matched behavior touches agent context, secrets, network egress, shell execution, package governance, or registry metadata. Use Layer 2 semantic review for ambiguous intent, and use suppression config only when a finding has been reviewed with a reason.
+Static rules identify textual or structural evidence in `SKILL.md`, helper Markdown documents, and scripts. Skill Vaccine does not execute skill scripts during scanning. Before regex matching, common zero-width format-control characters are normalized away so terms such as prompt-injection verbs or API-key references cannot be trivially split to evade checks. A static match is not always proof of exploitability, but it is enough to require review when the matched behavior touches agent context, secrets, network egress, shell execution, package governance, or registry metadata. Use Layer 2 semantic review for ambiguous intent, and use suppression config only when a finding has been reviewed with a reason.
 
 ## Security and Behavior Rules
 
@@ -14,7 +14,7 @@ Static rules identify textual or structural evidence. SkillShield does not execu
 
 Source inspiration: SkillSieve and SKILL.md semantic-attack papers treat agent-context manipulation as a primary malicious-skill class.
 
-Fix guidance: Remove instructions that ask the agent to ignore, override, or bypass system/developer/user instructions. If the skill needs priority rules, phrase them as task-local constraints.
+Fix guidance: Remove instructions that ask the agent to ignore, override, bypass, disregard, or supersede system/developer/user instructions. If the skill needs priority rules, phrase them as task-local constraints.
 
 ### `SS002` Secret exfiltration language
 
@@ -197,3 +197,4 @@ Fix guidance: Run or request structured semantic review for intent alignment, pe
 Source inspiration: SKILL.md governance-evasion risks where malicious instructions appear after reviewer or model context truncation.
 
 Fix guidance: Review the unreviewed `SKILL.md` tail, increase semantic review coverage, split long instructions into auditable files, or remove late risky instructions before approval.
+

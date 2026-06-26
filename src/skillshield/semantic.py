@@ -18,7 +18,7 @@ SEMANTIC_REVIEW_BYTES = 10_000
 def layer2_schema() -> dict:
     return {
         "schema_version": 1,
-        "name": "skillshield-layer2-semantic-decomposition",
+        "name": "skill-vaccine-layer2-semantic-decomposition",
         "description": "Provider-neutral structured outputs for optional Layer 2 semantic review.",
         "tasks": [
             _task_schema(
@@ -216,3 +216,4 @@ def _rel(path, root) -> str:
         return path.relative_to(root).as_posix()
     except ValueError:
         return path.as_posix()
+

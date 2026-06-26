@@ -26,8 +26,9 @@ OpenSkillEval은 skill이 존재한다고 해서 agent가 실제로 skill을 읽
 - popularity와 quality 사이의 관계를 단순화하면 안 된다.
 - offline scanner는 actual skill adherence를 직접 측정할 수 없다.
 
-## SkillShield 반영
+## Skill Vaccine 반영
 
-- `skillshield eval <labels.json>`.
+- `skill-vaccine eval <labels.json>`.
 - benchmark labels에 `source_paper`, `attack_class`, `expected_rule_ids`.
 - 후속 TODO: telemetry schema, hard negatives, packaged benchmark data.
+

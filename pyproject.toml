@@ -3,13 +3,25 @@ requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "skillshield"
+name = "skill-vaccine"
 version = "0.1.0"
-description = "Static and semantic-risk scanner for Agent Skills."
+description = "Scan-gated safety for Agent Skills before they reach Codex, Claude Code, CI, or a registry."
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
-authors = [{name = "SkillShield contributors"}]
+authors = [{name = "Skill Vaccine contributors"}]
+keywords = [
+    "agent-skills",
+    "skill-security",
+    "skill-scanner",
+    "ai-agent-security",
+    "prompt-injection",
+    "supply-chain-security",
+    "static-analysis",
+    "sarif",
+    "codex",
+    "claude-code",
+]
 dependencies = []
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -22,11 +34,11 @@ classifiers = [
 ]
 
 [project.urls]
-Repository = "https://github.com/ch040602/skill-shield"
-Documentation = "https://github.com/ch040602/skill-shield#readme"
+Repository = "https://github.com/ch040602/skill-vaccine"
+Documentation = "https://github.com/ch040602/skill-vaccine#readme"
 
 [project.scripts]
-skillshield = "skillshield.cli:main"
+skill-vaccine = "skillshield.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -36,3 +48,4 @@ skillshield = ["data/*.toml"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
+

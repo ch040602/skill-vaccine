@@ -1,9 +1,9 @@
 # Registry Metadata Audit
 
-SkillShield can add opt-in registry/package metadata findings:
+Skill Vaccine can add opt-in registry/package metadata findings:
 
 ```powershell
-python -m skillshield scan path\to\skill --metadata-audit --format json
+skill-vaccine scan path\to\skill --metadata-audit --format json
 ```
 
 The audit is opt-in because early local skills often do not have publication metadata, while registry and marketplace review usually require it.
@@ -44,3 +44,4 @@ These badges are documentation labels for registry policy. They are not cryptogr
 ## Limits
 
 Metadata can be falsified. Treat metadata audit as a registry review signal, not proof of identity, code provenance, or maintainer control.
+

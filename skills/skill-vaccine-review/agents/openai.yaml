@@ -1,0 +1,5 @@
+interface:
+  display_name: "Skill Vaccine Review"
+  short_description: "Gate Agent Skills before installation"
+  default_prompt: "Use $skill-vaccine-review to review and install path\\to\\skill only if it passes."
+

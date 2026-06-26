@@ -26,9 +26,10 @@ CoEvoSkills는 skill이 단일 함수형 tool보다 복잡한 multi-file artifac
 - verifier feedback이 약하면 generator가 benchmark-specific shortcut을 학습할 수 있다.
 - multi-file skill은 hidden script capability와 provenance 추적이 어려워진다.
 
-## SkillShield 반영
+## Skill Vaccine 반영
 
 - generated-skill publication gate TODO.
 - cross-file consistency `SS202`.
 - metadata/provenance audit.
 - benchmark/eval command는 generated skill 검증 loop의 일부로 사용할 수 있다.
+

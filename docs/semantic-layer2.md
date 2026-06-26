@@ -1,13 +1,13 @@
 # Layer 2 Semantic Decomposition
 
-SkillShield's Layer 2 is a provider-neutral review contract. The current implementation does not call an LLM or any network service. It only defines structured tasks and lets `scan --semantic-plan` add a routing finding when static evidence should be reviewed more deeply.
+Skill Vaccine's Layer 2 is a provider-neutral review contract. The current implementation does not call an LLM or any network service. It only defines structured tasks and lets `scan --semantic-plan` add a routing finding when static evidence should be reviewed more deeply.
 
 ## CLI
 
 ```powershell
-python -m skillshield semantic schema
-python -m skillshield scan path\to\skill --semantic-plan --format json
-python -m skillshield semantic review path\to\skill --provider fake
+skill-vaccine semantic schema
+skill-vaccine scan path\to\skill --semantic-plan --format json
+skill-vaccine semantic review path\to\skill --provider fake
 ```
 
 `--semantic-plan` may add `SS300 Needs Layer 2 semantic review` when static findings include high or critical severity findings, missing permission manifests with risky capabilities, agent-context manipulation, or risky script behavior.
@@ -129,3 +129,4 @@ Required output fields:
 | `high_risk` | Evidence shows dangerous capability or severe policy mismatch. |
 | `malicious` | Evidence shows harmful intent, exfiltration, deceptive execution, or prompt injection. |
 | `unknown` | Evidence is insufficient or contradictory. |
+

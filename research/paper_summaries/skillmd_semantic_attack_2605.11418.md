@@ -26,10 +26,11 @@
 - 공격 성공은 user query 분포와 candidate set에 민감하다.
 - 방어는 static keyword rule만으로 충분하지 않고 semantic review가 필요하다.
 
-## SkillShield 반영
+## Skill Vaccine 반영
 
 - `lifecycle_stage`: discovery, selection, governance.
 - `SS012` discovery keyword stuffing.
 - `SS004`, `SS005` selection manipulation.
 - `SS013`, `SS014` governance manipulation.
 - `docs/registry-lifecycle-risks.md`.
+

@@ -26,8 +26,9 @@
 - adoption signal은 quality/security의 직접 proxy가 아니다.
 - 공개 dataset이 private enterprise skill 사용을 대표하지 않을 수 있다.
 
-## SkillShield 반영
+## Skill Vaccine 반영
 
 - GitHub Action, pre-commit, SARIF, registry metadata audit으로 adoption friction을 줄였다.
 - benchmark/eval과 rule docs로 trust를 보강한다.
 - 후속 TODO: package/release automation, trust tier policy profiles.
+

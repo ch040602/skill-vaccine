@@ -2,7 +2,7 @@
 
 Date generated: 2026-06-25
 RDD TODO: `RDD-T-00000031`
-Scope: Verify whether SkillShield's research workflow applied Google's Agentic RAG pattern completely enough for traceable development decisions.
+Scope: Verify whether Skill Vaccine's research workflow applied Google's Agentic RAG pattern completely enough for traceable development decisions.
 
 ## Sources
 
@@ -24,7 +24,7 @@ Key source facts used:
 
 Overall status: **partial but now remediated for documentation traceability**.
 
-The previous SkillShield work applied the spirit of Agentic RAG: it built a corpus catalog, searched multiple research corpora, used role-scoped paper analysis, judged the result sufficient for MVP requirements, and created TODOs for missing work.
+The previous Skill Vaccine work applied the spirit of Agentic RAG: it built a corpus catalog, searched multiple research corpora, used role-scoped paper analysis, judged the result sufficient for MVP requirements, and created TODOs for missing work.
 
 However, it did **not** fully preserve the Google-style audit trail. The missing pieces were not primarily implementation bugs; they were traceability gaps:
 
@@ -39,10 +39,10 @@ This audit adds those missing artifacts in `research/google_agentic_rag_trace.js
 
 ## Google Pattern Checklist
 
-| Google Agentic RAG element | Current SkillShield state before this audit | Update made now | Status |
+| Google Agentic RAG element | Current Skill Vaccine state before this audit | Update made now | Status |
 |---|---|---|---|
 | Orchestrator / Router | Main agent coordinated paper discovery, summarization, and RDD development, but no explicit trace artifact. | Added durable trace with `orchestrator` metadata and decision state. | remediated |
-| Corpus catalog with descriptions | Present in `skillshield_research_synthesis.md`. | Repeated in structured trace with routing-purpose descriptions. | complete |
+| Corpus catalog with descriptions | Present in `skill-vaccine-research-synthesis.md`. | Repeated in structured trace with routing-purpose descriptions. | complete |
 | Planner maps facts to corpora | Required facts were listed, but not mapped to candidate corpora. | Added `retrieval_plan.required_facts` and `routes`. | remediated |
 | Query rewriting and fanout | Web/PDF searches were performed, but not durably logged by plan item. | Added `query_rewrites.subqueries` with target corpora and reasons. | remediated |
 | Retrieve snippets with provenance | PDF/text sources were fetched, but synthesis cited papers broadly instead of snippet IDs. | Added `retrieved_snippets` with IDs, source URLs, local paths, and supported facts. | remediated |
@@ -56,7 +56,7 @@ This audit adds those missing artifacts in `research/google_agentic_rag_trace.js
 
 The biggest deviation from Google's method was not insufficient research coverage. It was **insufficient provenance structure**. Google's pattern is valuable because it makes the answer auditable: which corpora were selected, which missing facts triggered follow-up retrieval, and which snippets support final claims.
 
-SkillShield now has the right development direction, but future research updates should not stop at a prose synthesis. They should produce a machine-readable trace before accepting downstream TODOs.
+Skill Vaccine now has the right development direction, but future research updates should not stop at a prose synthesis. They should produce a machine-readable trace before accepting downstream TODOs.
 
 ## Accepted RDD Findings
 
@@ -88,7 +88,7 @@ Action: Record future TODO to add a repeatable Agentic RAG research-run template
 
 ## Required Future Standard
 
-Any future SkillShield research update should save:
+Any future Skill Vaccine research update should save:
 
 1. `corpus_catalog`: id, description, source URL, local artifact path.
 2. `retrieval_plan`: required facts, priority, candidate corpora, stop conditions.

@@ -1,6 +1,6 @@
 # Registry Lifecycle Risks
 
-SkillShield reports `lifecycle_stage` on findings that target how an agent skill is discovered, selected, or governed before runtime execution.
+Skill Vaccine reports `lifecycle_stage` on findings that target how an agent skill is discovered, selected, or governed before runtime execution.
 
 ## Stages
 
@@ -45,3 +45,4 @@ SARIF output stores the same value under `result.properties.lifecycle_stage`.
 ## Limits
 
 These are static pattern detectors. They identify suspicious lifecycle manipulation signals but do not prove runtime exploitability. Use Layer 2 semantic review and Layer 3 jury review for ambiguous or high-impact cases.
+

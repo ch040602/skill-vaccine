@@ -43,7 +43,7 @@ class FakeJuryProvider:
 def jury_schema() -> dict:
     return {
         "schema_version": 1,
-        "name": "skillshield-layer3-jury-protocol",
+        "name": "skill-vaccine-layer3-jury-protocol",
         "request_schema": {
             "type": "object",
             "required": ["semantic_review", "juror_profiles"],

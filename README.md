@@ -1,16 +1,37 @@
-# SkillShield
+# Skill Vaccine
 
-![SkillShield teaser: security scanner reviewing Agent Skill packages](docs/assets/skillshield-teaser.png)
+**Scan-gated safety for Agent Skills before they reach Codex, Claude Code, CI, or a registry.**
 
-SkillShield's core scanner is **not** an Agent Skill and it is **not** an LLM wrapper.
+<p align="center">
+  <img src="docs/assets/skill-vaccine-teaser.svg" alt="Skill Vaccine scan gate showing static analysis, semantic review, verdicts, trust tiers, and safe installation" width="900">
+</p>
 
-It is a dependency-free Python CLI/package that scans Agent Skill packages. SkillShield checks
-`SKILL.md`, referenced files, metadata, capability claims, and cross-skill combinations before an
-agent, CI job, registry, or marketplace review process trusts a skill.
+`agent-skills` · `skill-security` · `prompt-injection` · `supply-chain-security` · `sarif` · `codex` · `claude-code`
 
-The repository also includes an optional `skills/skillshield-review` Agent Skill adapter for Codex
-and Claude Code. That adapter does not replace the CLI; it asks the agent LLM to review a safe
-SkillShield packet when semantic judgment is needed.
+Skill Vaccine is a local scan gate for Agent Skill packages. It combines one deterministic CLI,
+`skill-vaccine`, with one optional Agent Skill adapter, `skills/skill-vaccine-review`, so teams can
+block risky packages in CI, review third-party skills with structured evidence, and install only
+after a scan-backed verdict.
+
+## Name And Positioning
+
+This project intentionally does not use the public name `SkillShield` or `skill-shield`. Existing
+SkillShield / Skill Shield services already use those names for hosted directories, badges, and
+web-based skill or MCP scanning, including public listings such as [skillshield.dev](https://skillshield.dev/)
+and Product Hunt's [SkillShield page](https://www.producthunt.com/products/skillshield). Skill
+Vaccine is different:
+
+| Area | Skill Vaccine | Existing SkillShield / Skill Shield services |
+| --- | --- | --- |
+| Primary shape | Open-source local CLI plus optional Agent Skill adapter | Hosted service, public directory, badge, or web scanner |
+| Default execution | Local static scan; no reviewed skill code execution | Service-dependent |
+| LLM behavior | No model call by default; agent-assisted review only over an evidence packet | Service-dependent |
+| Install identity | npm/Python package `skill-vaccine`, CLI `skill-vaccine`, Agent Skill `skill-vaccine-review` | Names such as SkillShield, Skill Shield, or `skillshield` |
+| Main audience | Developers, CI pipelines, registry reviewers, and agent users who need local evidence | Users of the external hosted services |
+| Repository | `ch040602/skill-vaccine` | Not this repository |
+
+The Python implementation package is still named `skillshield` internally for compatibility during
+the rename. Treat `skill-vaccine` as the public CLI.
 
 ## Contents
 
@@ -19,7 +40,8 @@ SkillShield packet when semantic judgment is needed.
 - [Install](#install)
 - [Quick Start](#quick-start)
 - [Outputs](#outputs)
-- [LLM-Assisted Review](#llm-assisted-review)
+- [Review Then Install](#review-then-install)
+- [Agent-Assisted Review](#agent-assisted-review)
 - [Policy Profiles](#policy-profiles)
 - [Integrations](#integrations)
 - [Documentation](#documentation)
@@ -29,93 +51,106 @@ SkillShield packet when semantic judgment is needed.
 ## Why
 
 Agent skills can hide risk in natural-language instructions, permission claims, helper scripts, and
-registry metadata. SkillShield provides a local static review layer with optional semantic-routing
-contracts, admission verdicts, trust tier metadata, SARIF output, and benchmark fixtures.
+registry metadata. Skill Vaccine provides a local static review layer with optional
+semantic-routing contracts, admission verdicts, trust tier metadata, SARIF output, and benchmark
+fixtures.
 
 Current checks cover:
 
 - prompt injection, secret exfiltration, hidden behavior, and governance evasion
-- overbroad discovery/selection language in `SKILL.md`
-- risky script behavior across Python, shell, PowerShell, batch, and JavaScript fixtures
+- overbroad discovery or selection language in `SKILL.md`
+- risky behavior in `SKILL.md`, referenced Markdown docs, and helper scripts across Python, shell,
+  PowerShell, batch, and JavaScript fixtures
 - missing or mismatched permission/capability declarations
 - registry metadata provenance gaps
 - cross-file hidden capabilities and cross-skill risk graph links
-- semantic review coverage gaps and provider-neutral Layer 2/Layer 3 contracts
+- semantic review coverage gaps and provider-neutral Layer 2 / Layer 3 contracts
 
 ## What This Is
 
-SkillShield is primarily a scanner for skills. The installable Skill adapter is optional and lives
-under `skills/skillshield-review`.
+Skill Vaccine is one product with two entry points:
 
-| Question | Answer |
+| Entry point | Purpose |
 | --- | --- |
-| Is the core scanner a Codex/Agent Skill? | No. The Python package is a normal CLI/library. |
-| Is there an optional Codex/Claude Code Skill? | Yes. `skills/skillshield-review` wraps the CLI output for agent-assisted review. |
-| Does the scanner call an LLM by default? | No. The default scanner is static, local, and dependency-free. |
-| What are the semantic and jury commands? | Provider-neutral schemas, deterministic fake-provider test harnesses, and safe LLM review packets. |
-| What does it scan? | Agent Skill folders, including `SKILL.md`, helper scripts, metadata, config, and related packages. |
-| Who is it for? | Developers, CI pipelines, registries, and marketplace reviewers evaluating third-party or generated skills. |
+| `skill-vaccine` CLI | Deterministic local scans, CI gates, SARIF output, manifests, benchmark checks, and evidence packet generation. |
+| `skills/skill-vaccine-review` | Codex/Claude Code adapter that asks the host agent to review a safe packet generated by the CLI. |
 
-The Layer 2 semantic review and Layer 3 jury pieces define the review contract. The default
-implementation still uses local fake providers for interface testing and does not send data to any
-external model API. Use `skillshield llm prompt` or the `skillshield-review` Skill when you want a
-Codex or Claude Code session to perform the semantic review over a bounded evidence packet.
+The adapter does not replace the CLI. It wraps CLI evidence for semantic review and keeps the
+reviewed skill's code unexecuted.
 
 ## Install
 
 From npm:
 
 ```powershell
-npm install -g @cchsh/skill-shield
-skillshield --help
+npm install -g @cchsh/skill-vaccine
+skill-vaccine --help
 ```
 
 From a checkout:
 
 ```powershell
 python -m pip install -e .
+skill-vaccine --help
 ```
 
-Or run directly from the source tree:
+Or run directly from the source tree through the bundled Node wrapper:
 
 ```powershell
-$env:PYTHONPATH = "src"
-python -m skillshield scan tests\fixtures\benign_skill
+node bin\skill-vaccine.js scan tests\fixtures\benign_skill
 ```
+
+For local Codex use, keep one source of truth by linking the installed skill to this checkout:
+
+```powershell
+New-Item -ItemType Junction `
+  -Path "$env:USERPROFILE\.codex\skills\skill-vaccine-review" `
+  -Target ".\skills\skill-vaccine-review"
+```
+
+Do not maintain a separate copied skill folder unless you intentionally want it to diverge from the
+version that is committed and pushed.
 
 ## Quick Start
 
 Scan a skill:
 
 ```powershell
-skillshield scan path\to\skill --format text
-skillshield scan path\to\skill --format json
-skillshield scan path\to\skill --format sarif --fail-on high
+skill-vaccine scan path\to\skill --format text
+skill-vaccine scan path\to\skill --format json
+skill-vaccine scan path\to\skill --format sarif --fail-on high
+```
+
+Scan and install one local Agent Skill package into Codex only if it passes the install gate:
+
+```powershell
+skill-vaccine install path\to\skill --format json
+skill-vaccine install path\to\skill --skills-dir "$env:USERPROFILE\.codex\skills" --format json
 ```
 
 Use a JSON or TOML config:
 
 ```powershell
-skillshield scan path\to\skill --config skillshield.json --format json
-skillshield scan path\to\skill --config skillshield.toml --format json
+skill-vaccine scan path\to\skill --config skill-vaccine.json --format json
+skill-vaccine scan path\to\skill --config skill-vaccine.toml --format json
 ```
 
 Inspect related contracts and reports:
 
 ```powershell
-skillshield manifest suggest path\to\skill
-skillshield semantic schema
-skillshield semantic review path\to\skill --provider fake
-skillshield jury schema
-skillshield jury review path\to\skill --provider fake
-skillshield llm schema
-skillshield llm prompt path\to\skill --target codex --format markdown
-skillshield llm validate llm-response.json
-skillshield graph path\to\skills
-skillshield eval tests\fixtures\benchmark\labels.json
-skillshield telemetry schema
-skillshield trust profiles
-skillshield trust host-profiles
+skill-vaccine manifest suggest path\to\skill
+skill-vaccine semantic schema
+skill-vaccine semantic review path\to\skill --provider fake
+skill-vaccine jury schema
+skill-vaccine jury review path\to\skill --provider fake
+skill-vaccine llm schema
+skill-vaccine llm prompt path\to\skill --target codex --format markdown
+skill-vaccine llm validate llm-response.json
+skill-vaccine graph path\to\skills
+skill-vaccine eval tests\fixtures\benchmark\labels.json
+skill-vaccine telemetry schema
+skill-vaccine trust profiles
+skill-vaccine trust host-profiles
 ```
 
 ## Outputs
@@ -131,40 +166,83 @@ Every scan reports:
 JSON and SARIF are intended for CI, registry intake, and review automation. Text output is for local
 triage.
 
-## LLM-Assisted Review
+## Review Then Install
 
-SkillShield now has two explicit operating modes.
+`skill-vaccine install` is the local install path for installing another Agent Skill. It scans
+exactly one local skill package, reads the skill name from `SKILL.md` frontmatter, and copies it into
+the Codex skills directory only when the scan is below the install threshold. The default threshold
+is `high`, so `high` and `critical` findings block installation.
+
+CLI path:
+
+```powershell
+# 1. Inspect the candidate skill without installing it.
+skill-vaccine scan path\to\candidate-skill --format text
+
+# 2. Install only if the scan gate passes.
+skill-vaccine install path\to\candidate-skill --format json
+
+# 3. Use a stricter local policy when desired.
+skill-vaccine install path\to\candidate-skill --fail-on medium
+```
+
+Explicit Codex skills directory:
+
+```powershell
+skill-vaccine install path\to\candidate-skill `
+  --skills-dir "$env:USERPROFILE\.codex\skills" `
+  --format json
+```
+
+Agent Skill path:
+
+```text
+Use $skill-vaccine-review to review path\to\candidate-skill and install it only if it passes.
+```
+
+The adapter first asks the CLI to create a safe evidence packet with
+`skill-vaccine llm prompt ...`. After semantic review, it uses `skill-vaccine install ...` for the
+actual installation. The agent should not copy, link, execute, or run install scripts from the
+candidate skill manually.
+
+The install command does not fetch remote repositories, execute reviewed scripts, run package
+installers, or overwrite an existing installed skill. A blocked result returns `blocked: true`,
+`installed: false`, and keeps the candidate skill out of the Codex skills directory.
+
+## Agent-Assisted Review
+
+Skill Vaccine has two explicit modes.
 
 | Mode | Use it when | What runs | LLM behavior |
 | --- | --- | --- | --- |
-| CLI-only mode | You need deterministic local scans, CI gates, SARIF, benchmarks, or registry intake. | `skillshield scan`, `semantic review --provider fake`, `jury review --provider fake`. | No LLM call. No network. No reviewed skill code execution. |
-| Skill-assisted LLM review | You want Codex or Claude Code to judge intent, permission justification, covert behavior, or cross-file consistency using static evidence. | `skills/skillshield-review` runs `skillshield llm prompt ...` and the agent reviews the packet. | The agent LLM reviews the packet in-session. SkillShield still does not call a model API itself. |
+| CLI-only mode | You need deterministic local scans, install gates, CI gates, SARIF, benchmarks, or registry intake. | `skill-vaccine scan`, `skill-vaccine install`, `semantic review --provider fake`, `jury review --provider fake`. | No LLM call. No network. No reviewed skill code execution. |
+| Agent-assisted review | You want Codex or Claude Code to judge intent, permission justification, covert behavior, cross-file consistency, or whether a reviewed skill should be installed. | `skills/skill-vaccine-review` runs `skill-vaccine llm prompt ...`; for installation it runs `skill-vaccine install ...` after review. | The host agent LLM reviews the packet in-session. The CLI still does not call a model API itself. |
 
 Generate a review packet directly:
 
 ```powershell
-skillshield llm schema
-skillshield llm prompt path\to\skill --target codex --format markdown
-skillshield llm prompt path\to\skill --target claude-code --format json
-skillshield llm validate llm-response.json
+skill-vaccine llm schema
+skill-vaccine llm prompt path\to\skill --target codex --format markdown
+skill-vaccine llm prompt path\to\skill --target claude-code --format json
+skill-vaccine llm validate llm-response.json
 ```
 
-`skillshield llm schema` prints the JSON contract for both the prompt packet and the expected LLM
-response. `skillshield llm prompt` embeds the same `response_schema` in every JSON packet and prints
+`skill-vaccine llm schema` prints the JSON contract for both the prompt packet and the expected LLM
+response. `skill-vaccine llm prompt` embeds the same `response_schema` in every JSON packet and prints
 it in Markdown output so Codex or Claude Code can return machine-checkable review results.
-`skillshield llm validate` checks a saved LLM response artifact against that contract and exits
+`skill-vaccine llm validate` checks a saved LLM response artifact against that contract and exits
 non-zero when required fields, enum values, score ranges, or array fields are invalid.
 
-Use the installable Skill adapter from this repo:
+Use the installable Agent Skill adapter from this repo:
 
 ```text
-skills/skillshield-review
+skills/skill-vaccine-review
 ```
 
-The adapter is intentionally small: it tells Codex or Claude Code to collect SkillShield evidence,
+The adapter is intentionally small: it tells Codex or Claude Code to collect local static evidence,
 avoid executing reviewed skill code, preserve critical static findings, and return structured JSON
-with semantic task results. This is the path that matches the papers' layered pattern: fast static
-screening first, LLM semantic review only when judgment is needed.
+with semantic task results. This is the layered pattern: fast static screening first, semantic review
+only when judgment is needed.
 
 ## Policy Profiles
 
@@ -191,7 +269,7 @@ GitHub Actions:
   with:
     path: .
     fail-on: critical
-    sarif-file: skillshield.sarif
+    sarif-file: skill-vaccine-review.sarif
 ```
 
 pre-commit:
@@ -200,9 +278,9 @@ pre-commit:
 repos:
   - repo: local
     hooks:
-      - id: skillshield
-        name: SkillShield
-        entry: skillshield scan .
+      - id: skill-vaccine-review
+        name: Skill Vaccine
+        entry: skill-vaccine scan .
         language: python
         pass_filenames: false
         args: [--fail-on, high]
@@ -231,8 +309,8 @@ repos:
 
 ## Research Basis
 
-SkillShield is grounded in the local research synthesis at
-[research/skillshield_research_synthesis.md](research/skillshield_research_synthesis.md). Korean
+Skill Vaccine is grounded in the local research synthesis at
+[research/skill-vaccine-research-synthesis.md](research/skill-vaccine-research-synthesis.md). Korean
 paper summaries are indexed in [research/paper_summaries/index.md](research/paper_summaries/index.md).
 
 The implementation maps ideas from SkillSieve, SkillGuard, SkillProbe, Skilldex, OpenSkillEval,
@@ -267,3 +345,5 @@ Current benchmark smoke metrics on the bundled fixture set:
 - escalation rate: `0.6`
 
 These are contract-smoke metrics for the MVP fixture suite, not broad scanner-quality claims.
+
+

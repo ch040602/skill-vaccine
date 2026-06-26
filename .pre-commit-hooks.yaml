@@ -1,7 +1,8 @@
-- id: skillshield
-  name: SkillShield
-  description: Scan Agent Skill packages for security and conformance risks.
-  entry: skillshield scan .
+- id: skill-vaccine-review
+  name: Skill Vaccine
+  description: Cut through risky Agent Skill packages before they reach your agent.
+  entry: skill-vaccine scan .
   language: python
   pass_filenames: false
   args: [--fail-on, critical]
+

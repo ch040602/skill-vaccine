@@ -8,7 +8,7 @@ from .models import Finding, ScanResult
 def render_text(result: ScanResult) -> str:
     total_unreviewed = sum(coverage.unreviewed_bytes for coverage in result.semantic_coverage)
     lines = [
-        f"SkillShield scan: {result.root}",
+        f"skill-vaccine scan: {result.root}",
         f"Skills: {result.skill_count}",
         f"Max severity: {result.max_severity}",
         f"Verdict: {result.verdict}",
@@ -57,8 +57,8 @@ def render_sarif(result: ScanResult) -> str:
             {
                 "tool": {
                     "driver": {
-                        "name": "SkillShield",
-                        "informationUri": "https://github.com/skillshield/skillshield",
+                        "name": "Skill Vaccine",
+                        "informationUri": "https://github.com/ch040602/skill-vaccine",
                         "rules": list(rules.values()),
                     }
                 },
@@ -110,3 +110,4 @@ def _sarif_level(severity: str) -> str:
     if severity == "medium":
         return "warning"
     return "note"
+

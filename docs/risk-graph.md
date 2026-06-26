@@ -1,9 +1,9 @@
 # Cross-Skill Risk Graph
 
-SkillShield can build a provider-free JSON graph across multiple skill packages:
+Skill Vaccine can build a provider-free JSON graph across multiple skill packages:
 
 ```powershell
-python -m skillshield graph path\to\skills
+skill-vaccine graph path\to\skills
 ```
 
 The graph reuses static scan evidence. It does not execute skill code and does not call a model.
@@ -39,3 +39,4 @@ Each node represents one discovered skill package and includes:
 ## Limits
 
 Edges are compositional risk hypotheses, not proof that two skills will be selected in the same agent session. They are meant for registry governance, CI review, and Layer 2 semantic follow-up.
+

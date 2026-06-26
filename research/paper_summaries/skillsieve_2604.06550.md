@@ -26,10 +26,11 @@ SkillSieve는 모든 skill을 비싼 LLM 판단으로 보내지 않고, 정적 t
 - 정적 Layer 1은 semantic rewriting이나 문맥 의존 위장을 놓칠 수 있다.
 - benchmark와 threat model이 실제 registry 전체를 완전히 대표한다고 보기는 어렵다.
 
-## SkillShield 반영
+## Skill Vaccine 반영
 
 - `scan`의 Layer 1 정적 rule 체계.
 - `semantic schema`, `semantic review --provider fake`.
 - `jury schema`, `jury review --provider fake`.
 - `SS300` provider-free semantic routing finding.
 - 후속 TODO: 실제 provider adapter, chunk coverage, broader benchmark.
+

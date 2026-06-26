@@ -23,14 +23,15 @@ for (const candidate of candidates) {
     continue;
   }
   if (result.error) {
-    console.error(`skillshield: failed to launch ${candidate}: ${result.error.message}`);
+    console.error(`Skill Vaccine: failed to launch ${candidate}: ${result.error.message}`);
     process.exit(1);
   }
   process.exit(result.status === null ? 1 : result.status);
 }
 
-console.error("skillshield: Python 3.11+ is required but was not found on PATH.");
+console.error("Skill Vaccine: Python 3.11+ is required but was not found on PATH.");
 if (lastResult && lastResult.error && lastResult.error.message) {
   console.error(lastResult.error.message);
 }
 process.exit(1);
+

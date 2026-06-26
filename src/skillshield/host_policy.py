@@ -85,7 +85,7 @@ def host_profile_policy(profile_id: str | None) -> HostProfilePolicy | None:
 def host_profile_policy_schema() -> dict[str, Any]:
     return {
         "schema_version": 1,
-        "name": "skillshield-host-profile-policies",
+        "name": "skill-vaccine-host-profile-policies",
         "profiles": [policy.to_dict() for policy in HOST_PROFILE_POLICIES.values()],
         "precedence": [
             "Explicit CLI flags",
@@ -98,3 +98,4 @@ def host_profile_policy_schema() -> dict[str, Any]:
             "required_trust_tier and verdict remain separate outputs.",
         ],
     }
+

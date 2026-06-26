@@ -1,11 +1,11 @@
 # Local Usage and Adherence Events
 
-SkillShield defines a local artifact schema for evaluating whether a skill was actually selected, read, and followed during an agent run.
+Skill Vaccine defines a local artifact schema for evaluating whether a skill was actually selected, read, and followed during an agent run.
 
 No telemetry is collected automatically. The schema is for evaluator-owned local files, deterministic test harnesses, or explicit review artifacts.
 
 ```powershell
-python -m skillshield telemetry schema
+skill-vaccine telemetry schema
 ```
 
 ## Event Types
@@ -23,7 +23,8 @@ Each event includes local identifiers such as `event_id`, `timestamp`, `skill_id
 
 ## Non-Goals
 
-- SkillShield does not transmit events.
-- SkillShield does not monitor users or agents in the background.
+- Skill Vaccine does not transmit events.
+- Skill Vaccine does not monitor users or agents in the background.
 - The scanner output does not include telemetry.
 - Event artifacts can contain sensitive task summaries or evidence, so evaluators should store them locally and redact them before sharing.
+

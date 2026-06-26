@@ -26,9 +26,10 @@ SkillProbe는 개별 skill이 안전해 보여도 여러 skill이 같은 agent s
 - marketplace popularity나 usage count는 보안 proxy로 충분하지 않다.
 - 실제 agent orchestration policy와 session memory 구조에 따라 위험이 달라진다.
 
-## SkillShield 반영
+## Skill Vaccine 반영
 
-- `skillshield graph <path>`.
+- `skill-vaccine graph <path>`.
 - `data_source`, `exfiltration_sink`, `prompt_injection_source`, `command_injection_sink` tag.
 - `data_exfiltration`, `prompt_to_command_injection` edge.
 - `SS202` cross-file consistency finding.
+

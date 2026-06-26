@@ -72,6 +72,232 @@ def test_cli_scan_returns_failure_at_threshold() -> None:
     assert main(["scan", str(FIXTURES / "benign_skill"), "--fail-on", "low"]) == 0
 
 
+def test_cli_install_copies_benign_skill_after_scan(capsys) -> None:
+    install_root = Path(".pytest-local") / "installed_skills"
+    shutil.rmtree(install_root, ignore_errors=True)
+    try:
+        exit_code = main([
+            "install",
+            str(FIXTURES / "benign_skill"),
+            "--skills-dir",
+            str(install_root),
+            "--format",
+            "json",
+        ])
+        captured = capsys.readouterr()
+        payload = json.loads(captured.out)
+
+        assert exit_code == 0
+        assert payload["installed"] is True
+        assert payload["blocked"] is False
+        assert payload["skill_name"] == "benign-doc-helper"
+        assert payload["mode"] == "copy"
+        assert payload["scan"]["max_severity"] == "info"
+        assert (install_root / "benign-doc-helper" / "SKILL.md").exists()
+    finally:
+        shutil.rmtree(install_root.parent, ignore_errors=True)
+
+
+def test_cli_install_blocks_rejected_skill_before_copy(capsys) -> None:
+    install_root = Path(".pytest-local") / "blocked_install"
+    shutil.rmtree(install_root, ignore_errors=True)
+    try:
+        exit_code = main([
+            "install",
+            str(FIXTURES / "malicious_skill"),
+            "--skills-dir",
+            str(install_root),
+            "--format",
+            "json",
+        ])
+        captured = capsys.readouterr()
+        payload = json.loads(captured.out)
+
+        assert exit_code == 1
+        assert payload["installed"] is False
+        assert payload["blocked"] is True
+        assert payload["skill_name"] == "helpful-release-helper"
+        assert payload["scan"]["max_severity"] == "critical"
+        assert "critical" in payload["reason"]
+        assert not (install_root / "helpful-release-helper").exists()
+    finally:
+        shutil.rmtree(install_root.parent, ignore_errors=True)
+
+
+def test_cli_install_uses_codex_home_skills_directory_by_default(capsys, monkeypatch) -> None:
+    codex_home = Path(".pytest-local") / "codex_home_install"
+    shutil.rmtree(codex_home, ignore_errors=True)
+    monkeypatch.setenv("CODEX_HOME", str(codex_home))
+    try:
+        exit_code = main([
+            "install",
+            str(FIXTURES / "benign_skill"),
+            "--format",
+            "json",
+        ])
+        captured = capsys.readouterr()
+        payload = json.loads(captured.out)
+
+        expected_destination = codex_home / "skills" / "benign-doc-helper"
+        assert exit_code == 0
+        assert payload["installed"] is True
+        assert Path(payload["destination"]) == expected_destination
+        assert (expected_destination / "SKILL.md").exists()
+    finally:
+        shutil.rmtree(codex_home.parent, ignore_errors=True)
+
+
+def test_cli_install_refuses_to_overwrite_existing_skill(capsys) -> None:
+    install_root = Path(".pytest-local") / "existing_install"
+    destination = install_root / "benign-doc-helper"
+    shutil.rmtree(install_root, ignore_errors=True)
+    destination.mkdir(parents=True)
+    marker = destination / "SKILL.md"
+    marker.write_text("existing install\n", encoding="utf-8")
+    try:
+        try:
+            main([
+                "install",
+                str(FIXTURES / "benign_skill"),
+                "--skills-dir",
+                str(install_root),
+            ])
+        except SystemExit as error:
+            assert error.code == 2
+        else:
+            raise AssertionError("install should reject an existing destination")
+
+        captured = capsys.readouterr()
+        assert "destination already exists" in captured.err
+        assert marker.read_text(encoding="utf-8") == "existing install\n"
+    finally:
+        shutil.rmtree(install_root.parent, ignore_errors=True)
+
+
+def test_referenced_markdown_attack_is_scanned_and_blocks_install(capsys) -> None:
+    result = scan_path(FIXTURES / "referenced_markdown_attack_skill")
+    findings_by_rule = {finding.rule_id: finding for finding in result.findings}
+
+    assert findings_by_rule["SS001"].path == "docs/workflow.md"
+    assert findings_by_rule["SS002"].path == "docs/workflow.md"
+    assert result.max_severity == "critical"
+    assert result.verdict == "rejected"
+
+    install_root = Path(".pytest-local") / "referenced_markdown_install"
+    shutil.rmtree(install_root, ignore_errors=True)
+    try:
+        exit_code = main([
+            "install",
+            str(FIXTURES / "referenced_markdown_attack_skill"),
+            "--skills-dir",
+            str(install_root),
+            "--format",
+            "json",
+        ])
+        captured = capsys.readouterr()
+        payload = json.loads(captured.out)
+
+        assert exit_code == 1
+        assert payload["blocked"] is True
+        assert payload["scan"]["max_severity"] == "critical"
+        assert not (install_root / "referenced-markdown-helper").exists()
+    finally:
+        shutil.rmtree(install_root.parent, ignore_errors=True)
+
+
+def test_paraphrased_secret_exfiltration_is_detected_and_blocks_install(capsys) -> None:
+    result = scan_path(FIXTURES / "paraphrased_exfiltration_skill")
+    finding = next(finding for finding in result.findings if finding.rule_id == "SS002")
+
+    assert finding.path == "SKILL.md"
+    assert any(term in (finding.evidence or "").lower() for term in {"collect", "upload"})
+    assert result.max_severity == "critical"
+    assert result.verdict == "rejected"
+
+    install_root = Path(".pytest-local") / "paraphrased_exfiltration_install"
+    shutil.rmtree(install_root, ignore_errors=True)
+    try:
+        exit_code = main([
+            "install",
+            str(FIXTURES / "paraphrased_exfiltration_skill"),
+            "--skills-dir",
+            str(install_root),
+            "--format",
+            "json",
+        ])
+        captured = capsys.readouterr()
+        payload = json.loads(captured.out)
+
+        assert exit_code == 1
+        assert payload["blocked"] is True
+        assert payload["scan"]["max_severity"] == "critical"
+        assert not (install_root / "paraphrased-telemetry-helper").exists()
+    finally:
+        shutil.rmtree(install_root.parent, ignore_errors=True)
+
+
+def test_paraphrased_prompt_injection_is_detected_and_blocks_install(capsys) -> None:
+    result = scan_path(FIXTURES / "paraphrased_prompt_injection_skill")
+    finding = next(finding for finding in result.findings if finding.rule_id == "SS001")
+
+    assert finding.path == "SKILL.md"
+    assert "disregard" in (finding.evidence or "").lower()
+    assert result.max_severity == "critical"
+    assert result.verdict == "rejected"
+
+    install_root = Path(".pytest-local") / "paraphrased_prompt_install"
+    shutil.rmtree(install_root, ignore_errors=True)
+    try:
+        exit_code = main([
+            "install",
+            str(FIXTURES / "paraphrased_prompt_injection_skill"),
+            "--skills-dir",
+            str(install_root),
+            "--format",
+            "json",
+        ])
+        captured = capsys.readouterr()
+        payload = json.loads(captured.out)
+
+        assert exit_code == 1
+        assert payload["blocked"] is True
+        assert payload["scan"]["max_severity"] == "critical"
+        assert not (install_root / "paraphrased-priority-helper").exists()
+    finally:
+        shutil.rmtree(install_root.parent, ignore_errors=True)
+
+
+def test_zero_width_obfuscation_is_normalized_and_blocks_install(capsys) -> None:
+    result = scan_path(FIXTURES / "zero_width_obfuscation_skill")
+    findings_by_rule = {finding.rule_id: finding for finding in result.findings}
+
+    assert findings_by_rule["SS001"].path == "SKILL.md"
+    assert findings_by_rule["SS002"].path == "SKILL.md"
+    assert result.max_severity == "critical"
+    assert result.verdict == "rejected"
+
+    install_root = Path(".pytest-local") / "zero_width_install"
+    shutil.rmtree(install_root, ignore_errors=True)
+    try:
+        exit_code = main([
+            "install",
+            str(FIXTURES / "zero_width_obfuscation_skill"),
+            "--skills-dir",
+            str(install_root),
+            "--format",
+            "json",
+        ])
+        captured = capsys.readouterr()
+        payload = json.loads(captured.out)
+
+        assert exit_code == 1
+        assert payload["blocked"] is True
+        assert payload["scan"]["max_severity"] == "critical"
+        assert not (install_root / "zero-width-obfuscation-helper").exists()
+    finally:
+        shutil.rmtree(install_root.parent, ignore_errors=True)
+
+
 def test_all_reported_capabilities_are_registered() -> None:
     expected = {
         "filesystem.write",
@@ -213,7 +439,7 @@ def test_llm_schema_cli_outputs_prompt_and_response_contract(capsys) -> None:
     captured = capsys.readouterr()
     payload = json.loads(captured.out)
     assert exit_code == 0
-    assert payload["name"] == "skillshield-llm-review-prompt-contract"
+    assert payload["name"] == "skill-vaccine-llm-review-prompt-contract"
     assert payload["packet_schema"]["required"] == [
         "schema_version",
         "name",
@@ -334,7 +560,7 @@ def test_llm_prompt_cli_outputs_claude_code_markdown_packet(capsys) -> None:
     ])
     captured = capsys.readouterr()
     assert exit_code == 0
-    assert "# SkillShield LLM Review Packet" in captured.out
+    assert "# Skill Vaccine LLM Review Packet" in captured.out
     assert "Target agent: claude-code" in captured.out
     assert "SS150" in captured.out
     assert "## Response Schema" in captured.out
@@ -343,20 +569,37 @@ def test_llm_prompt_cli_outputs_claude_code_markdown_packet(capsys) -> None:
 
 
 def test_agent_skill_adapter_is_installable_and_mentions_codex_and_claude_code() -> None:
-    skill_md = Path("skills/skillshield-review/SKILL.md")
+    skill_md = Path("skills/skill-vaccine-review/SKILL.md")
     text = skill_md.read_text(encoding="utf-8")
     frontmatter = text.split("---", 2)[1]
-    assert "name: skillshield-review" in text
+    assert "name: skill-vaccine-review" in text
     assert "description:" in text
+    assert "safely review or install an Agent Skill" in text
     assert "metadata:" not in frontmatter
     assert "tags:" not in frontmatter
     assert "Codex" in text
     assert "Claude Code" in text
-    assert "skillshield llm prompt" in text
-    assert "skillshield llm schema" in text
-    assert "skillshield llm validate" in text
+    assert "skill-vaccine llm prompt" in text
+    assert "skill-vaccine llm schema" in text
+    assert "skill-vaccine llm validate" in text
+    assert "skill-vaccine install" in text
     assert "response_schema" in text
     assert "Do not execute" in text
+
+
+def test_agent_skill_adapter_documents_scan_gated_install_workflow() -> None:
+    text = Path("skills/skill-vaccine-review/SKILL.md").read_text(encoding="utf-8")
+    assert "## Review Then Install" in text
+    assert "Only install when the user asked to install" in text
+    assert "confirms installation after the" in text
+    assert "malicious" in text
+    assert "hold_for_human_review" in text
+    assert "do not bypass a blocked CLI install result" in text
+    assert "skill-vaccine install path\\to\\skill --format json" in text
+    assert '--skills-dir "$env:USERPROFILE\\.codex\\skills"' in text
+    assert "`blocked: true`" in text
+    assert "does not copy the skill" in text
+    assert "Do not copy or link the reviewed skill manually" in text
 
 
 def test_manifest_includes_skill_adapter_files() -> None:
@@ -364,11 +607,16 @@ def test_manifest_includes_skill_adapter_files() -> None:
     assert "recursive-include skills *.md *.yaml" in manifest
 
 
-def test_npm_package_exposes_skillshield_binary_and_files() -> None:
+def test_npm_package_exposes_skill_vaccine_binary_and_files() -> None:
     package = json.loads(Path("package.json").read_text(encoding="utf-8"))
-    assert package["name"] == "@cchsh/skill-shield"
+    assert package["name"] == "@cchsh/skill-vaccine"
     assert package["version"] == "0.1.0"
-    assert package["bin"]["skillshield"] == "bin/skillshield.js"
+    assert package["bin"]["skill-vaccine"] == "bin/skill-vaccine.js"
+    assert package["description"] == "Scan-gated safety for Agent Skills before they reach Codex, Claude Code, CI, or a registry."
+    assert package["homepage"] == "https://github.com/ch040602/skill-vaccine#readme"
+    assert package["repository"]["url"] == "git+https://github.com/ch040602/skill-vaccine.git"
+    assert package["bugs"]["url"] == "https://github.com/ch040602/skill-vaccine/issues"
+    assert {"prompt-injection", "supply-chain-security", "sarif"} <= set(package["keywords"])
     assert package["files"] == [
         "bin/",
         "src/skillshield/*.py",
@@ -383,14 +631,21 @@ def test_npm_package_exposes_skillshield_binary_and_files() -> None:
     ]
 
 
-def test_npm_binary_runs_skillshield_help() -> None:
+def test_npm_binary_runs_skill_vaccine_help() -> None:
     completed = subprocess.run(
-        ["node", "bin/skillshield.js", "--help"],
+        ["node", "bin/skill-vaccine.js", "--help"],
         check=True,
         capture_output=True,
         text=True,
     )
-    assert "Scan Agent Skill packages" in completed.stdout
+    assert "Scan-gated safety for Agent Skills" in completed.stdout
+
+
+def test_agent_skill_openai_metadata_is_scan_gate_positioned() -> None:
+    metadata = Path("skills/skill-vaccine-review/agents/openai.yaml").read_text(encoding="utf-8")
+    assert 'display_name: "Skill Vaccine Review"' in metadata
+    assert 'short_description: "Gate Agent Skills before installation"' in metadata
+    assert "review and install" in metadata
 
 
 def test_discovery_keyword_stuffing_reports_lifecycle_stage() -> None:
@@ -464,23 +719,23 @@ def test_github_action_runs_sarif_scan_command() -> None:
     action = Path("action.yml").read_text(encoding="utf-8")
     assert "runs:" in action
     assert "using: composite" in action
-    assert "skillshield scan" in action
+    assert "skill-vaccine scan" in action
     assert "--format sarif" in action
     assert "--fail-on" in action
 
 
 def test_github_workflow_uploads_sarif_output() -> None:
-    workflow = Path(".github/workflows/skillshield.yml").read_text(encoding="utf-8")
-    assert "path: skills/skillshield-review" in workflow
+    workflow = Path(".github/workflows/skill-vaccine.yml").read_text(encoding="utf-8")
+    assert "path: skills/skill-vaccine-review" in workflow
     assert "github/codeql-action/upload-sarif@v3" in workflow
     assert "continue-on-error: true" in workflow
-    assert "sarif_file: skillshield.sarif" in workflow
+    assert "sarif_file: skill-vaccine-review.sarif" in workflow
 
 
 def test_pre_commit_hook_manifest_supports_threshold_args() -> None:
     hooks = Path(".pre-commit-hooks.yaml").read_text(encoding="utf-8")
-    assert "id: skillshield" in hooks
-    assert "entry: skillshield scan ." in hooks
+    assert "id: skill-vaccine-review" in hooks
+    assert "entry: skill-vaccine scan ." in hooks
     assert "--fail-on" in hooks
     assert "critical" in hooks
 
@@ -493,14 +748,31 @@ def test_readme_documents_pre_commit_threshold_configuration() -> None:
 
 def test_readme_separates_cli_only_and_skill_assisted_llm_review() -> None:
     readme = Path("README.md").read_text(encoding="utf-8")
+    assert "Scan-gated safety for Agent Skills" in readme
+    assert "docs/assets/skill-vaccine-teaser.svg" in readme
+    assert "prompt-injection" in readme
+    assert "supply-chain-security" in readme
     assert "CLI-only mode" in readme
-    assert "Skill-assisted LLM review" in readme
-    assert "skillshield llm schema" in readme
+    assert "Agent-assisted review" in readme
+    assert "skill-vaccine llm schema" in readme
     assert "response_schema" in readme
-    assert "skillshield llm prompt" in readme
-    assert "skillshield llm validate" in readme
-    assert "skills/skillshield-review" in readme
+    assert "skill-vaccine llm prompt" in readme
+    assert "skill-vaccine llm validate" in readme
+    assert "skills/skill-vaccine-review" in readme
     assert "Claude Code" in readme
+
+
+def test_readme_documents_cli_and_agent_skill_install_paths() -> None:
+    readme = Path("README.md").read_text(encoding="utf-8")
+    assert "Review Then Install" in readme
+    assert "skill-vaccine scan path\\to\\candidate-skill --format text" in readme
+    assert "skill-vaccine install path\\to\\candidate-skill --format json" in readme
+    assert '--skills-dir "$env:USERPROFILE\\.codex\\skills"' in readme
+    assert "Use $skill-vaccine-review to review path\\to\\candidate-skill and install it only if it passes." in readme
+    assert "skill-vaccine llm prompt ..." in readme
+    assert "The agent should not copy, link, execute, or run install scripts" in readme
+    assert "`blocked: true`" in readme
+    assert "`installed: false`" in readme
 
 
 def test_benchmark_labels_cover_required_attack_classes() -> None:
@@ -658,7 +930,7 @@ def test_korean_paper_summary_index_links_selected_papers() -> None:
         assert "## 방법" in summary
         assert "## 실험과 지표" in summary
         assert "## 한계" in summary
-        assert "## SkillShield 반영" in summary
+        assert "## Skill Vaccine 반영" in summary
 
 
 def test_rules_doc_covers_all_implemented_rules() -> None:
@@ -849,12 +1121,20 @@ def test_config_enabled_rules_filters_findings(capsys) -> None:
 def test_pyproject_defines_release_ready_metadata_and_console_script() -> None:
     pyproject = tomllib.loads(Path("pyproject.toml").read_text(encoding="utf-8"))
     project = pyproject["project"]
-    assert project["name"] == "skillshield"
+    assert project["name"] == "skill-vaccine"
+    assert project["description"] == "Scan-gated safety for Agent Skills before they reach Codex, Claude Code, CI, or a registry."
     assert project["readme"] == "README.md"
     assert project["requires-python"] >= ">=3.11"
-    assert project["scripts"]["skillshield"] == "skillshield.cli:main"
-    assert "Repository" in project["urls"]
+    assert project["scripts"]["skill-vaccine"] == "skillshield.cli:main"
+    assert {"agent-skills", "prompt-injection", "sarif"} <= set(project["keywords"])
+    assert project["urls"]["Repository"] == "https://github.com/ch040602/skill-vaccine"
+    assert project["urls"]["Documentation"] == "https://github.com/ch040602/skill-vaccine#readme"
     assert "Programming Language :: Python :: 3" in project["classifiers"]
+
+
+def test_pre_commit_docs_reference_skill_vaccine_repo_url() -> None:
+    pre_commit_doc = Path("docs/pre-commit.md").read_text(encoding="utf-8")
+    assert "repo: https://github.com/ch040602/skill-vaccine" in pre_commit_doc
 
 
 def test_release_workflow_builds_and_checks_distribution_artifacts() -> None:
@@ -871,7 +1151,7 @@ def test_release_docs_include_local_build_and_smoke_test_commands() -> None:
     assert "python -m pip install build twine" in release_doc
     assert "python -m build" in release_doc
     assert "python -m twine check dist/*" in release_doc
-    assert "skillshield scan tests\\fixtures\\benign_skill" in release_doc
+    assert "skill-vaccine scan tests\\fixtures\\benign_skill" in release_doc
 
 
 def test_scan_result_verdicts_are_separate_from_severity() -> None:
@@ -889,6 +1169,7 @@ def test_json_and_sarif_include_verdict_properties() -> None:
     sarif = json.loads(render_sarif(result))
     assert sarif["runs"][0]["properties"]["verdict"] == "rejected"
     assert sarif["runs"][0]["properties"]["max_severity"] == "critical"
+    assert sarif["runs"][0]["tool"]["driver"]["informationUri"] == "https://github.com/ch040602/skill-vaccine"
 
 
 def test_semantic_review_reports_chunk_coverage_and_late_risky_sections() -> None:
@@ -1001,7 +1282,7 @@ def test_telemetry_schema_cli_outputs_json(capsys) -> None:
     captured = capsys.readouterr()
     payload = json.loads(captured.out)
     assert exit_code == 0
-    assert payload["name"] == "skillshield-local-usage-adherence-events"
+    assert payload["name"] == "skill-vaccine-local-usage-adherence-events"
     assert payload["automatic_collection"] is False
 
 
@@ -1046,7 +1327,7 @@ def test_trust_profiles_cli_outputs_json(capsys) -> None:
     captured = capsys.readouterr()
     payload = json.loads(captured.out)
     assert exit_code == 0
-    assert payload["name"] == "skillshield-trust-tier-profiles"
+    assert payload["name"] == "skill-vaccine-trust-tier-profiles"
     assert {profile["id"] for profile in payload["profiles"]} >= {"unvetted", "reviewed", "trusted", "local-only"}
 
 
@@ -1110,3 +1391,5 @@ def test_trust_tier_appears_in_text_and_docs() -> None:
     assert "required_trust_tier" in doc
     assert "local-only" in doc
     assert "verdict" in doc
+
+

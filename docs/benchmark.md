@@ -1,11 +1,11 @@
 # Benchmark Fixtures
 
-SkillShield includes an MVP benchmark manifest at `tests/fixtures/benchmark/labels.json`.
+Skill Vaccine includes an MVP benchmark manifest at `tests/fixtures/benchmark/labels.json`.
 
 Run it with:
 
 ```powershell
-python -m skillshield eval tests\fixtures\benchmark\labels.json
+skill-vaccine eval tests\fixtures\benchmark\labels.json
 ```
 
 ## Label Schema
@@ -58,3 +58,4 @@ Current MVP fixture metrics:
 | suspicious rate | 0.8 |
 | escalation rate | 0.6 |
 | rule coverage | 1.0 |
+

@@ -1,6 +1,6 @@
 # Capability Taxonomy
 
-SkillShield treats an Agent Skill as a permission-bearing artifact. Findings carry a stable `capability` ID that can later feed manifest generation, deny-by-default runtime policy, CI gating, and marketplace trust decisions.
+Skill Vaccine treats an Agent Skill as a permission-bearing artifact. Findings carry a stable `capability` ID that can later feed manifest generation, deny-by-default runtime policy, CI gating, and marketplace trust decisions.
 
 ## Default Policy
 
@@ -33,3 +33,4 @@ The MVP reports inferred capabilities but does not enforce runtime permissions.
 | `permission.manifest` | governance | `POLICY` | confirm | Declare or validate skill permission policy. |
 | `skill.conformance` | governance | `POLICY` | confirm | Validate Agent Skill package structure. |
 | `registry.metadata` | governance | `POLICY` | confirm | Validate registry package metadata and provenance. |
+

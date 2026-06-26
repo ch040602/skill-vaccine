@@ -1,10 +1,10 @@
 # Scan Config
 
-SkillShield accepts JSON or TOML config files through `--config`.
+Skill Vaccine accepts JSON or TOML config files through `--config`.
 
 ```powershell
-python -m skillshield scan path\to\skill --config skillshield.json --format json
-python -m skillshield scan path\to\skill --config skillshield.toml --format json
+skill-vaccine scan path\to\skill --config skill-vaccine.json --format json
+skill-vaccine scan path\to\skill --config skill-vaccine.toml --format json
 ```
 
 Command-line flags take precedence over config values. If neither is present, `--fail-on` defaults to `critical`.
@@ -69,3 +69,4 @@ Host profile defaults apply only when a value is not supplied by a CLI flag or c
 | `marketplace-review` | `low` | `true` | `true` |
 
 See [host profile policies](host-profiles.md) for the review semantics behind these defaults.
+

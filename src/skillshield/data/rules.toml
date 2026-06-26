@@ -7,7 +7,7 @@ lifecycle_stage = "governance"
 source_paper = "SkillSieve; SKILL.md semantic attacks"
 rationale = "Agent-context override language is a primary malicious skill class."
 extractor_kind = "regex"
-pattern = '''\b(ignore|override|bypass)\b.{0,60}\b(previous|system|developer)\b'''
+pattern = '''\b(ignore|override|bypass|disregard|supersede|replace)\b.{0,80}\b(previous|prior|earlier|system|developer)\b'''
 
 [[rules]]
 id = "SS002"
@@ -18,7 +18,7 @@ lifecycle_stage = "governance"
 source_paper = "SkillSieve; SkillGuard; SkillProbe"
 rationale = "Secret access combined with data movement is a severe skill risk."
 extractor_kind = "regex"
-pattern = '''\b(exfiltrate|steal|leak|send).{0,80}\b(secret|token|credential|api[_ -]?key|password)\b'''
+pattern = '''\b(exfiltrate|steal|leak|send|upload|transmit|forward|collect).{0,80}\b(secret|token|credential|api[_ -]?key|password)\b|\b(secret|token|credential|api[_ -]?key|password)\b.{0,80}\b(exfiltrate|steal|leak|send|upload|transmit|forward)\b'''
 
 [[rules]]
 id = "SS003"
