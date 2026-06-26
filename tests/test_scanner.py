@@ -790,24 +790,44 @@ def test_benchmark_labels_cover_required_attack_classes() -> None:
     labels = json.loads((FIXTURES / "benchmark" / "labels.json").read_text(encoding="utf-8"))
     assert labels["benchmark_version"] == "0.1.0"
     classes = {case["attack_class"] for case in labels["cases"]}
-    assert {"benign", "prompt_injection_and_exfiltration", "obfuscation", "overbroad_selection", "permission_mismatch"} <= classes
+    expected_classes = {
+        "benign",
+        "benign_script",
+        "prompt_injection_and_exfiltration",
+        "referenced_markdown_instruction_smuggling",
+        "paraphrased_secret_exfiltration",
+        "paraphrased_prompt_injection",
+        "zero_width_obfuscation",
+        "encoded_payload_obfuscation",
+        "overbroad_selection",
+        "permission_mismatch",
+        "script_capability_chain",
+        "platform_shell_risks",
+        "discovery_manipulation",
+        "governance_evasion",
+    }
+    assert expected_classes <= classes
+    assert len(labels["cases"]) == 14
     assert all("source_paper" in case and "expected_rule_ids" in case for case in labels["cases"])
 
 
 def test_evaluation_reports_precision_and_recall() -> None:
     report = run_evaluation(FIXTURES / "benchmark" / "labels.json")
-    assert report["case_count"] == 5
+    assert report["case_count"] == 14
     assert report["metrics"]["precision"] == 1.0
     assert report["metrics"]["recall"] == 1.0
     assert report["metrics"]["f1"] == 1.0
     assert report["metrics"]["f2"] == 1.0
     assert report["metrics"]["fpr"] == 0.0
     assert report["metrics"]["false_positive_rate"] == 0.0
-    assert report["metrics"]["suspicious_rate"] == 0.8
-    assert report["metrics"]["escalation_rate"] == 0.6
-    assert report["rule_coverage"]["covered_cases"] == 4
-    assert report["static_metrics"]["finding_count"] > 0
-    assert report["static_metrics"]["severity_counts"]["critical"] >= 1
+    assert report["metrics"]["suspicious_rate"] == 0.8571
+    assert report["metrics"]["escalation_rate"] == 0.7143
+    assert report["confusion"] == {"tp": 12, "fp": 0, "tn": 2, "fn": 0}
+    assert report["rule_coverage"]["covered_cases"] == 12
+    assert report["rule_coverage"]["expected_cases"] == 12
+    assert report["rule_coverage"]["coverage"] == 1.0
+    assert report["static_metrics"]["finding_count"] == 70
+    assert report["static_metrics"]["severity_counts"]["critical"] == 18
 
 
 def test_eval_cli_outputs_json(capsys) -> None:
@@ -818,7 +838,8 @@ def test_eval_cli_outputs_json(capsys) -> None:
     assert payload["metrics"]["precision"] == 1.0
     assert payload["metrics"]["recall"] == 1.0
     assert payload["metrics"]["f2"] == 1.0
-    assert payload["metrics"]["escalation_rate"] == 0.6
+    assert payload["case_count"] == 14
+    assert payload["metrics"]["escalation_rate"] == 0.7143
 
 
 def test_config_suppression_marks_finding_and_updates_max_severity() -> None:

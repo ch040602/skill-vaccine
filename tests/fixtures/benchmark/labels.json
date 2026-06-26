@@ -12,6 +12,14 @@
       "expected_rule_ids": []
     },
     {
+      "id": "benign_script_skill",
+      "path": "../benign_script_skill",
+      "label": "benign",
+      "attack_class": "benign_script",
+      "source_paper": "Skilldex / OpenSkillEval",
+      "expected_rule_ids": []
+    },
+    {
       "id": "malicious_skill",
       "path": "../malicious_skill",
       "label": "malicious",
@@ -20,10 +28,42 @@
       "expected_rule_ids": ["SS001", "SS002"]
     },
     {
+      "id": "referenced_markdown_attack_skill",
+      "path": "../referenced_markdown_attack_skill",
+      "label": "malicious",
+      "attack_class": "referenced_markdown_instruction_smuggling",
+      "source_paper": "SkillSieve / Under the Hood of SKILL.md",
+      "expected_rule_ids": ["SS001", "SS002"]
+    },
+    {
+      "id": "paraphrased_exfiltration_skill",
+      "path": "../paraphrased_exfiltration_skill",
+      "label": "malicious",
+      "attack_class": "paraphrased_secret_exfiltration",
+      "source_paper": "SkillSieve / SkillGuard",
+      "expected_rule_ids": ["SS002"]
+    },
+    {
+      "id": "paraphrased_prompt_injection_skill",
+      "path": "../paraphrased_prompt_injection_skill",
+      "label": "malicious",
+      "attack_class": "paraphrased_prompt_injection",
+      "source_paper": "Under the Hood of SKILL.md",
+      "expected_rule_ids": ["SS001"]
+    },
+    {
+      "id": "zero_width_obfuscation_skill",
+      "path": "../zero_width_obfuscation_skill",
+      "label": "malicious",
+      "attack_class": "zero_width_obfuscation",
+      "source_paper": "SkillSieve",
+      "expected_rule_ids": ["SS001", "SS002"]
+    },
+    {
       "id": "obfuscated_skill",
       "path": "../obfuscated_skill",
       "label": "malicious",
-      "attack_class": "obfuscation",
+      "attack_class": "encoded_payload_obfuscation",
       "source_paper": "SkillSieve",
       "expected_rule_ids": ["SS011"]
     },
@@ -42,6 +82,38 @@
       "attack_class": "permission_mismatch",
       "source_paper": "SkillGuard / SkillProbe",
       "expected_rule_ids": ["SS201"]
+    },
+    {
+      "id": "deep_script_skill",
+      "path": "../deep_script_skill",
+      "label": "malicious",
+      "attack_class": "script_capability_chain",
+      "source_paper": "SkillSieve / SkillGuard",
+      "expected_rule_ids": ["SS009", "SS015", "SS016", "SS017", "SS018", "SS202"]
+    },
+    {
+      "id": "platform_shell_risks",
+      "path": "../platform_shell_risks",
+      "label": "malicious",
+      "attack_class": "platform_shell_risks",
+      "source_paper": "SkillSieve",
+      "expected_rule_ids": ["SS006", "SS007", "SS010", "SS015"]
+    },
+    {
+      "id": "discovery_manipulation_skill",
+      "path": "../discovery_manipulation_skill",
+      "label": "malicious",
+      "attack_class": "discovery_manipulation",
+      "source_paper": "Under the Hood of SKILL.md",
+      "expected_rule_ids": ["SS012"]
+    },
+    {
+      "id": "governance_evasion_skill",
+      "path": "../governance_evasion_skill",
+      "label": "malicious",
+      "attack_class": "governance_evasion",
+      "source_paper": "Under the Hood of SKILL.md",
+      "expected_rule_ids": ["SS013", "SS014"]
     }
   ]
 }

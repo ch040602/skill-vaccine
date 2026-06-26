@@ -344,13 +344,17 @@ npm pack --dry-run
 
 Current benchmark smoke metrics on the bundled fixture set:
 
+- cases: `14`
+- benign controls: `2`
+- risky cases: `12`
 - precision: `1.0`
 - recall: `1.0`
 - F1: `1.0`
 - F2: `1.0`
 - FPR: `0.0`
-- suspicious rate: `0.8`
-- escalation rate: `0.6`
+- suspicious rate: `0.8571`
+- escalation rate: `0.7143`
+- rule coverage: `1.0`
 
 These are contract-smoke metrics for the MVP fixture suite, not broad scanner-quality claims.
 
