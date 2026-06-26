@@ -27,6 +27,7 @@ after a scan-backed verdict.
 - [Integrations](#integrations)
 - [Documentation](#documentation)
 - [Research Basis](#research-basis)
+- [Contributing](#contributing)
 - [Development](#development)
 
 ## Why
@@ -314,6 +315,7 @@ repos:
 - [GitHub Action](docs/github-action.md)
 - [pre-commit](docs/pre-commit.md)
 - [Release](docs/release.md)
+- [Contributing](CONTRIBUTING.md)
 
 ## Research Basis
 
@@ -325,6 +327,11 @@ The implementation maps ideas from SkillSieve, SkillGuard, SkillProbe, Skilldex,
 SkillsBench, EvoSkills, SKILL.md semantic-attack work, and broader agent-skill landscape papers into
 static rules, semantic-routing contracts, jury protocol scaffolding, evaluation fixtures, and
 admission-policy metadata.
+
+## Contributing
+
+See [Contributing](CONTRIBUTING.md) for setup, validation, benchmark update rules, npm release
+checks, and safe skill-review contribution rules.
 
 ## Development
 

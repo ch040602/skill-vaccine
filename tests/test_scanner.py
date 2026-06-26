@@ -626,6 +626,7 @@ def test_npm_package_exposes_skill_vaccine_binary_and_files() -> None:
         "docs/",
         "research/",
         "README.md",
+        "CONTRIBUTING.md",
         "pyproject.toml",
         "MANIFEST.in",
     ]
@@ -784,6 +785,27 @@ def test_readme_documents_npm_registry_management_state() -> None:
     assert "`E401`" in readme
     assert "npm publish --access public" in readme
     assert "node bin\\skill-vaccine.js" in readme
+
+
+def test_readme_links_contributing_guide_with_validation_contracts() -> None:
+    readme = Path("README.md").read_text(encoding="utf-8")
+    contributing = Path("CONTRIBUTING.md").read_text(encoding="utf-8")
+
+    assert "- [Contributing](#contributing)" in readme
+    assert "[Contributing](CONTRIBUTING.md)" in readme
+    assert "## Contributing" in readme
+    assert "python -m pytest" in contributing
+    assert "python -m compileall -q src tests" in contributing
+    assert "node bin\\skill-vaccine.js --help" in contributing
+    assert "npm pack --dry-run" in contributing
+    assert "tests\\fixtures\\benchmark\\labels.json" in contributing
+    assert "quick_validate.py skills\\skill-vaccine-review" in contributing
+    assert "Do not execute reviewed skill code" in contributing
+
+
+def test_npm_package_includes_contributing_guide() -> None:
+    package = json.loads(Path("package.json").read_text(encoding="utf-8"))
+    assert "CONTRIBUTING.md" in package["files"]
 
 
 def test_benchmark_labels_cover_required_attack_classes() -> None:
