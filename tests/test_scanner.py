@@ -775,6 +775,17 @@ def test_readme_documents_cli_and_agent_skill_install_paths() -> None:
     assert "`installed: false`" in readme
 
 
+def test_readme_documents_npm_registry_management_state() -> None:
+    readme = Path("README.md").read_text(encoding="utf-8")
+    assert "## npm Package Management" in readme
+    assert "`@cchsh/skill-vaccine`" in readme
+    assert "`publishConfig.access = public`" in readme
+    assert "`404 Not Found`" in readme
+    assert "`E401`" in readme
+    assert "npm publish --access public" in readme
+    assert "node bin\\skill-vaccine.js" in readme
+
+
 def test_benchmark_labels_cover_required_attack_classes() -> None:
     labels = json.loads((FIXTURES / "benchmark" / "labels.json").read_text(encoding="utf-8"))
     assert labels["benchmark_version"] == "0.1.0"

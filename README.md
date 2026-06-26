@@ -38,6 +38,7 @@ the rename. Treat `skill-vaccine` as the public CLI.
 - [Why](#why)
 - [What This Is](#what-this-is)
 - [Install](#install)
+- [npm Package Management](#npm-package-management)
 - [Quick Start](#quick-start)
 - [Outputs](#outputs)
 - [Review Then Install](#review-then-install)
@@ -80,7 +81,7 @@ reviewed skill's code unexecuted.
 
 ## Install
 
-From npm:
+From npm after the package is published:
 
 ```powershell
 npm install -g @cchsh/skill-vaccine
@@ -110,6 +111,33 @@ New-Item -ItemType Junction `
 
 Do not maintain a separate copied skill folder unless you intentionally want it to diverge from the
 version that is committed and pushed.
+
+## npm Package Management
+
+The npm package identity is `@cchsh/skill-vaccine`, and it exposes the `skill-vaccine` binary from
+`bin/skill-vaccine.js`. The package is configured for public scoped publication with
+`publishConfig.access = public`.
+
+Registry status checked on 2026-06-26:
+
+- `npm view @cchsh/skill-vaccine ...` returned `404 Not Found`, so the package name is not published
+  on npm yet.
+- `npm whoami` returned `E401`, so this workstation is not currently authenticated to npm.
+- `npm pack --dry-run` passes and includes the CLI wrapper, Python package, docs, research summaries,
+  and `skills/skill-vaccine-review`.
+
+Before publishing:
+
+```powershell
+npm login
+npm whoami
+npm pack --dry-run
+npm publish --access public
+npm view @cchsh/skill-vaccine name version repository.url homepage --json
+```
+
+Until the npm package is published, install from a checkout with `python -m pip install -e .` or run
+the bundled wrapper directly with `node bin\skill-vaccine.js ...`.
 
 ## Quick Start
 

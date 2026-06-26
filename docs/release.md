@@ -17,4 +17,24 @@ The GitHub release workflow runs on `v*` tags and manual dispatch. It tests the 
 
 `MANIFEST.in` includes README, action/pre-commit integration files, docs, research summaries, and fixture data in source distributions. Runtime wheel contents keep the internal `skillshield` package and expose the `skill-vaccine` console entry point.
 
+## npm
+
+The npm package name is `@cchsh/skill-vaccine`, with the `skill-vaccine` binary mapped to
+`bin/skill-vaccine.js`. `package.json` sets `publishConfig.access` to `public` for scoped package
+publication.
+
+As of the 2026-06-26 registry check, `npm view @cchsh/skill-vaccine` returned `404 Not Found`, so
+the package is prepared locally but not published yet. `npm whoami` returned `E401` on this
+workstation, so publish requires npm authentication first.
+
+Release checks:
+
+```powershell
+npm login
+npm whoami
+npm pack --dry-run
+npm publish --access public
+npm view @cchsh/skill-vaccine name version repository.url homepage --json
+```
+
 
