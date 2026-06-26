@@ -20,7 +20,7 @@ class RuleDefinition:
 
 
 def load_rule_definitions() -> tuple[RuleDefinition, ...]:
-    raw = tomllib.loads(files("skillshield.data").joinpath("rules.toml").read_text(encoding="utf-8"))
+    raw = tomllib.loads(files("skill_vaccine.data").joinpath("rules.toml").read_text(encoding="utf-8"))
     return tuple(_rule_definition(item) for item in raw.get("rules", []))
 
 

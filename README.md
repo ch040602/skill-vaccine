@@ -13,26 +13,6 @@ Skill Vaccine is a local scan gate for Agent Skill packages. It combines one det
 block risky packages in CI, review third-party skills with structured evidence, and install only
 after a scan-backed verdict.
 
-## Name And Positioning
-
-This project intentionally does not use the public name `SkillShield` or `skill-shield`. Existing
-SkillShield / Skill Shield services already use those names for hosted directories, badges, and
-web-based skill or MCP scanning, including public listings such as [skillshield.dev](https://skillshield.dev/)
-and Product Hunt's [SkillShield page](https://www.producthunt.com/products/skillshield). Skill
-Vaccine is different:
-
-| Area | Skill Vaccine | Existing SkillShield / Skill Shield services |
-| --- | --- | --- |
-| Primary shape | Open-source local CLI plus optional Agent Skill adapter | Hosted service, public directory, badge, or web scanner |
-| Default execution | Local static scan; no reviewed skill code execution | Service-dependent |
-| LLM behavior | No model call by default; agent-assisted review only over an evidence packet | Service-dependent |
-| Install identity | npm/Python package `skill-vaccine`, CLI `skill-vaccine`, Agent Skill `skill-vaccine-review` | Names such as SkillShield, Skill Shield, or `skillshield` |
-| Main audience | Developers, CI pipelines, registry reviewers, and agent users who need local evidence | Users of the external hosted services |
-| Repository | `ch040602/skill-vaccine` | Not this repository |
-
-The Python implementation package is still named `skillshield` internally for compatibility during
-the rename. Treat `skill-vaccine` as the public CLI.
-
 ## Contents
 
 - [Why](#why)

@@ -28,9 +28,9 @@
   },
   "files": [
     "bin/",
-    "src/skillshield/*.py",
-    "src/skillshield/data/*.py",
-    "src/skillshield/data/*.toml",
+    "src/skill_vaccine/*.py",
+    "src/skill_vaccine/data/*.py",
+    "src/skill_vaccine/data/*.toml",
     "skills/",
     "docs/",
     "research/",

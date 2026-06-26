@@ -13,7 +13,7 @@ const candidates = process.platform === "win32" ? ["py", "python", "python3"] : 
 let lastResult = null;
 
 for (const candidate of candidates) {
-  const args = candidate === "py" ? ["-3", "-m", "skillshield"] : ["-m", "skillshield"];
+  const args = candidate === "py" ? ["-3", "-m", "skill_vaccine"] : ["-m", "skill_vaccine"];
   const result = spawnSync(candidate, args.concat(process.argv.slice(2)), {
     env: { ...process.env, PYTHONPATH: pythonPath },
     stdio: "inherit"

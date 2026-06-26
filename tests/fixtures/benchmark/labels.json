@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "benchmark_version": "0.1.0",
-  "name": "skillshield-mvp-benchmark",
+  "name": "skill-vaccine-mvp-benchmark",
   "cases": [
     {
       "id": "benign_skill",

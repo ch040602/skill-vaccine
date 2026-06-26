@@ -2,7 +2,7 @@
 
 This document explains why each implemented Skill Vaccine rule exists, what kind of evidence it uses, and how to fix or review a finding.
 
-Rule metadata is packaged in `skillshield/data/rules.toml` and loaded with `importlib.resources`. Regex-backed static rules use the catalog's `pattern` field as their evidence extractor; structural, metadata, permission, cross-file, semantic-routing, and semantic-coverage rules use explicit scanner code but still carry cataloged severity, capability, source, and rationale metadata.
+Rule metadata is packaged in `skill_vaccine/data/rules.toml` and loaded with `importlib.resources`. Regex-backed static rules use the catalog's `pattern` field as their evidence extractor; structural, metadata, permission, cross-file, semantic-routing, and semantic-coverage rules use explicit scanner code but still carry cataloged severity, capability, source, and rationale metadata.
 
 ## Static certainty vs semantic suspicion
 

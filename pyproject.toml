@@ -38,13 +38,13 @@ Repository = "https://github.com/ch040602/skill-vaccine"
 Documentation = "https://github.com/ch040602/skill-vaccine#readme"
 
 [project.scripts]
-skill-vaccine = "skillshield.cli:main"
+skill-vaccine = "skill_vaccine.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
-skillshield = ["data/*.toml"]
+skill_vaccine = ["data/*.toml"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

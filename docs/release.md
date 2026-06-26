@@ -15,7 +15,7 @@ skill-vaccine scan tests\fixtures\benign_skill --format json
 
 The GitHub release workflow runs on `v*` tags and manual dispatch. It tests the project, builds wheel and source distribution artifacts, checks metadata with Twine, and uploads `dist/*.whl` plus `dist/*.tar.gz` for release review.
 
-`MANIFEST.in` includes README, action/pre-commit integration files, docs, research summaries, and fixture data in source distributions. Runtime wheel contents keep the internal `skillshield` package and expose the `skill-vaccine` console entry point.
+`MANIFEST.in` includes README, action/pre-commit integration files, docs, research summaries, and fixture data in source distributions. Runtime wheel contents keep the internal `skill_vaccine` package and expose the `skill-vaccine` console entry point.
 
 ## npm
 

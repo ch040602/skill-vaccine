@@ -5,8 +5,8 @@ Layer 3 is a provider-neutral jury interface for high-risk or disputed Layer 2 r
 ## CLI
 
 ```powershell
-python -m skillshield jury schema
-python -m skillshield jury review path\to\skill --provider fake
+python -m skill_vaccine jury schema
+python -m skill_vaccine jury review path\to\skill --provider fake
 ```
 
 ## Response Contract
@@ -35,4 +35,3 @@ Allowed final verdicts:
 - The fake jury is only an interface test, not a security classifier.
 - Real jury providers must be opt-in and isolated from scanner core.
 - The jury interface must not execute skill scripts.
-

@@ -7,20 +7,20 @@ import tomllib
 from importlib.resources import files
 from pathlib import Path
 
-from skillshield.cli import main
-from skillshield.evaluation import run_evaluation
-from skillshield.manifest import suggest_manifest
-from skillshield.reporters import render_json, render_sarif, render_text
-from skillshield.rule_catalog import load_rule_definitions
-from skillshield.rules import TEXT_PATTERNS
-from skillshield.scanner import scan_path
-from skillshield.semantic import LAYER2_TASK_IDS, layer2_schema
-from skillshield.semantic_review import FakeSemanticProvider, run_semantic_review
-from skillshield.jury import FakeJuryProvider, jury_schema, run_jury_review
-from skillshield.risk_graph import build_risk_graph
-from skillshield.taxonomy import CAPABILITIES, is_known_capability
-from skillshield.telemetry import telemetry_schema
-from skillshield.trust import trust_profile_schema, trust_profiles
+from skill_vaccine.cli import main
+from skill_vaccine.evaluation import run_evaluation
+from skill_vaccine.manifest import suggest_manifest
+from skill_vaccine.reporters import render_json, render_sarif, render_text
+from skill_vaccine.rule_catalog import load_rule_definitions
+from skill_vaccine.rules import TEXT_PATTERNS
+from skill_vaccine.scanner import scan_path
+from skill_vaccine.semantic import LAYER2_TASK_IDS, layer2_schema
+from skill_vaccine.semantic_review import FakeSemanticProvider, run_semantic_review
+from skill_vaccine.jury import FakeJuryProvider, jury_schema, run_jury_review
+from skill_vaccine.risk_graph import build_risk_graph
+from skill_vaccine.taxonomy import CAPABILITIES, is_known_capability
+from skill_vaccine.telemetry import telemetry_schema
+from skill_vaccine.trust import trust_profile_schema, trust_profiles
 
 
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -619,9 +619,9 @@ def test_npm_package_exposes_skill_vaccine_binary_and_files() -> None:
     assert {"prompt-injection", "supply-chain-security", "sarif"} <= set(package["keywords"])
     assert package["files"] == [
         "bin/",
-        "src/skillshield/*.py",
-        "src/skillshield/data/*.py",
-        "src/skillshield/data/*.toml",
+        "src/skill_vaccine/*.py",
+        "src/skill_vaccine/data/*.py",
+        "src/skill_vaccine/data/*.toml",
         "skills/",
         "docs/",
         "research/",
@@ -977,7 +977,7 @@ def test_rule_catalog_resource_covers_implemented_rules_and_regex_extractors() -
         assert definition.extractor_kind
     assert definitions["SS001"].pattern
     assert definitions["SS301"].extractor_kind == "semantic-coverage"
-    assert "SS001" in files("skillshield.data").joinpath("rules.toml").read_text(encoding="utf-8")
+    assert "SS001" in files("skill_vaccine.data").joinpath("rules.toml").read_text(encoding="utf-8")
 
 
 def test_text_patterns_are_loaded_from_packaged_rule_catalog() -> None:
@@ -1043,7 +1043,7 @@ def test_registry_host_profile_applies_policy_defaults(capsys) -> None:
     config_dir = Path(".pytest-local") / "host_profile"
     shutil.rmtree(config_dir, ignore_errors=True)
     config_dir.mkdir(parents=True)
-    config = config_dir / "skillshield.json"
+    config = config_dir / "skill-vaccine.json"
     try:
         config.write_text('{"host_profile": "registry"}', encoding="utf-8")
 
@@ -1071,7 +1071,7 @@ def test_cli_fail_on_overrides_host_profile_default(capsys) -> None:
     config_dir = Path(".pytest-local") / "host_profile_override"
     shutil.rmtree(config_dir, ignore_errors=True)
     config_dir.mkdir(parents=True)
-    config = config_dir / "skillshield.json"
+    config = config_dir / "skill-vaccine.json"
     try:
         config.write_text('{"host_profile": "registry"}', encoding="utf-8")
 
@@ -1136,7 +1136,7 @@ def test_pyproject_defines_release_ready_metadata_and_console_script() -> None:
     assert project["description"] == "Scan-gated safety for Agent Skills before they reach Codex, Claude Code, CI, or a registry."
     assert project["readme"] == "README.md"
     assert project["requires-python"] >= ">=3.11"
-    assert project["scripts"]["skill-vaccine"] == "skillshield.cli:main"
+    assert project["scripts"]["skill-vaccine"] == "skill_vaccine.cli:main"
     assert {"agent-skills", "prompt-injection", "sarif"} <= set(project["keywords"])
     assert project["urls"]["Repository"] == "https://github.com/ch040602/skill-vaccine"
     assert project["urls"]["Documentation"] == "https://github.com/ch040602/skill-vaccine#readme"
