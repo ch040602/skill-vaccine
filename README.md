@@ -3,6 +3,10 @@
 **Scan-gated safety for Agent Skills before they reach Codex, Claude Code, CI, or a registry.**
 
 <p align="center">
+  <img src="docs/assets/readme-teaser.svg" alt="Skill Vaccine teaser: scan-gated Agent Skill safety with fixture benchmark and install-gate pipeline" width="900">
+</p>
+
+<p align="center">
   <img src="docs/assets/skill-vaccine-teaser.svg" alt="Skill Vaccine scan gate showing static analysis, semantic review, verdicts, trust tiers, and safe installation" width="900">
 </p>
 

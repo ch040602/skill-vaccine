@@ -8,7 +8,7 @@
       "generatedBy": "mdpr-skill",
       "evidence": {
         "sourcePath": "C:\\Users\\hcslab_523\\Documents\\skill-vaccine\\README.md",
-        "markdownExcerpt": "<img src=\"docs/assets/skill-vaccine-teaser.svg\" alt=\"Skill Vaccine scan gate showing static analysis, semantic review, verdicts, trust tiers, and safe installation\" width=\"900\">"
+        "markdownExcerpt": "<img src=\"docs/assets/readme-teaser.svg\" alt=\"Skill Vaccine teaser: scan-gated Agent Skill safety with fixture benchmark and install-gate pipeline\" width=\"900\">"
       },
       "suggestion": {
         "text": "Rewrite this sentence into shorter, audience-readable language before converting it into slide content."
