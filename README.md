@@ -13,10 +13,22 @@ Skill Vaccine is a local scan gate for Agent Skill packages. It combines one det
 block risky packages in CI, review third-party skills with structured evidence, and install only
 after a scan-backed verdict.
 
+## At a Glance
+
+| Question | Answer |
+| --- | --- |
+| What is it? | A local scan gate for Agent Skill packages, with CLI and optional agent-assisted review paths. |
+| Best fit | CI gates, registry intake, third-party skill review, and safe local installation. |
+| Main outputs | Verdicts, severities, trust tiers, inferred capabilities, JSON, SARIF, and evidence packets. |
+| Safety boundary | Static evidence first; reviewed skill code is not executed during review. |
+| Validation | `python -m pytest`, `python -m compileall -q src tests`, and `npm pack --dry-run`. |
+
 ## Contents
 
+- [At a Glance](#at-a-glance)
 - [Why](#why)
 - [What This Is](#what-this-is)
+- [Choose a Path](#choose-a-path)
 - [Install](#install)
 - [npm Package Management](#npm-package-management)
 - [Quick Start](#quick-start)
@@ -59,6 +71,17 @@ Skill Vaccine is one product with two entry points:
 
 The adapter does not replace the CLI. It wraps CLI evidence for semantic review and keeps the
 reviewed skill's code unexecuted.
+
+## Choose a Path
+
+| Goal | Start with |
+| --- | --- |
+| Scan one local skill quickly | `skill-vaccine scan path\to\skill --format text` |
+| Gate a pull request or build | [GitHub Action](docs/github-action.md) or [pre-commit](docs/pre-commit.md) |
+| Tune findings and thresholds | [Config](docs/config.md), [Rules](docs/rules.md), and [Suppressions](docs/suppressions.md) |
+| Explain a verdict to a reviewer | [Verdicts](docs/verdicts.md), [Trust tiers](docs/trust-tiers.md), and [Capabilities](docs/capabilities.md) |
+| Review cross-file hidden behavior | [Cross-file consistency](docs/cross-file-consistency.md) and [Risk graph](docs/risk-graph.md) |
+| Run agent-assisted review | [Semantic Layer 2](docs/semantic-layer2.md), [Jury Layer 3](docs/jury-layer3.md), and `skills/skill-vaccine-review` |
 
 ## Install
 
