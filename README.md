@@ -8,12 +8,12 @@
 
 `agent-skills` · `skill-security` · `prompt-injection` · `supply-chain-security` · `sarif` · `codex` · `claude-code`
 
-Skill Vaccine is a local scan gate for Agent Skill packages. It combines one deterministic CLI,
+Skill Vaccine is a local scan gate for Agent Skill packages. It combines one deterministic command-line interface (CLI),
 `skill-vaccine`, with one optional Agent Skill adapter, `skills/skill-vaccine-review`, so teams can
-block risky packages in CI, review third-party skills with structured evidence, and install only
+block risky packages in Continuous Integration (CI), review third-party skills with structured evidence, and install only
 after a scan-backed verdict.
 
-## Scan-Gate Snapshot
+## Skill Review Becomes an Install Gate
 
 Skill Vaccine is built around a concrete admission decision: should this Agent Skill be allowed into a workstation, CI run, registry, or marketplace review queue?
 
@@ -21,7 +21,7 @@ Skill Vaccine is built around a concrete admission decision: should this Agent S
 | --- | --- |
 | CLI verdicts | `approved`, `conditional`, `rejected` |
 | Trust tiers | `unvetted`, `local-only`, `reviewed`, `trusted` |
-| Machine outputs | text, JSON, SARIF, manifest suggestions, LLM review packets |
+| Machine outputs | text, JavaScript Object Notation (JSON), Static Analysis Results Interchange Format (SARIF), manifest suggestions, LLM review packets |
 | Static scope | `SKILL.md`, referenced Markdown, Python, shell, PowerShell, batch, and JavaScript helper scripts |
 | Agent-assisted boundary | The reviewed skill's code stays unexecuted; the agent reviews a CLI-generated evidence packet. |
 
@@ -41,11 +41,12 @@ The bundled benchmark is intentionally a smoke contract for rule coverage, not a
 
 ## Contents
 
-- [Scan-Gate Snapshot](#scan-gate-snapshot)
+- [Skill Review Becomes an Install Gate](#skill-review-becomes-an-install-gate)
 - [Fixture Benchmark](#fixture-benchmark)
 - [Why](#why)
 - [What This Is](#what-this-is)
 - [Choose a Path](#choose-a-path)
+- [Gate Pipeline](#gate-pipeline)
 - [Install](#install)
 - [npm Package Management](#npm-package-management)
 - [Quick Start](#quick-start)
@@ -100,6 +101,21 @@ reviewed skill's code unexecuted.
 | Rule tuning and suppressions | [Rules](docs/rules.md), [Config](docs/config.md), and [Suppressions](docs/suppressions.md) |
 | Cross-file hidden behavior review | [Cross-file consistency](docs/cross-file-consistency.md) and [Risk graph](docs/risk-graph.md) |
 | Agent-assisted semantic review | [Semantic Layer 2](docs/semantic-layer2.md), [Jury Layer 3](docs/jury-layer3.md), and [`skills/skill-vaccine-review`](skills/skill-vaccine-review) |
+
+## Gate Pipeline
+
+```text
+parse package -> scan instructions and helpers -> infer capabilities -> assign verdict and trust tier -> emit JSON/SARIF/evidence -> install only if gate passes
+```
+
+| Gate | Artifact |
+| --- | --- |
+| Static rules | [`src/skill_vaccine/data/rules.toml`](src/skill_vaccine/data/rules.toml), [`docs/rules.md`](docs/rules.md) |
+| Capability inference | [`docs/capabilities.md`](docs/capabilities.md) |
+| Verdict and trust tier | [`docs/verdicts.md`](docs/verdicts.md), [`docs/trust-tiers.md`](docs/trust-tiers.md) |
+| Host policy | [`docs/host-profiles.md`](docs/host-profiles.md), [`docs/config.md`](docs/config.md) |
+| Machine-readable review | JSON/SARIF output, [`docs/semantic-layer2.md`](docs/semantic-layer2.md), [`docs/jury-layer3.md`](docs/jury-layer3.md) |
+| Public README review | [`docs/mdpr-readme/`](docs/mdpr-readme/) |
 
 ## Install
 

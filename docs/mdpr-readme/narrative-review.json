@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "mdpr-narrative-review-v1",
+  "generatedBy": "mdpr-skill",
+  "suggestions": [
+    {
+      "type": "NARRATIVE_CLAIM_TITLE_WEAK",
+      "kind": "claim-title",
+      "generatedBy": "mdpr-skill",
+      "evidence": {
+        "sourcePath": "C:\\Users\\hcslab_523\\Documents\\skill-vaccine\\README.md",
+        "markdownHeading": "Skill Review Becomes an Install Gate"
+      },
+      "suggestion": {
+        "action": "rewrite-title-as-claim",
+        "text": "Rewrite \"Skill Review Becomes an Install Gate\" as a claim title that states the takeaway before the evidence."
+      }
+    }
+  ]
+}
