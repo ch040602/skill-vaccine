@@ -13,19 +13,36 @@ Skill Vaccine is a local scan gate for Agent Skill packages. It combines one det
 block risky packages in CI, review third-party skills with structured evidence, and install only
 after a scan-backed verdict.
 
-## At a Glance
+## Scan-Gate Snapshot
 
-| Question | Answer |
+Skill Vaccine is built around a concrete admission decision: should this Agent Skill be allowed into a workstation, CI run, registry, or marketplace review queue?
+
+| Signal | Current state |
 | --- | --- |
-| What is it? | A local scan gate for Agent Skill packages, with CLI and optional agent-assisted review paths. |
-| Best fit | CI gates, registry intake, third-party skill review, and safe local installation. |
-| Main outputs | Verdicts, severities, trust tiers, inferred capabilities, JSON, SARIF, and evidence packets. |
-| Safety boundary | Static evidence first; reviewed skill code is not executed during review. |
-| Validation | `python -m pytest`, `python -m compileall -q src tests`, and `npm pack --dry-run`. |
+| CLI verdicts | `approved`, `conditional`, `rejected` |
+| Trust tiers | `unvetted`, `local-only`, `reviewed`, `trusted` |
+| Machine outputs | text, JSON, SARIF, manifest suggestions, LLM review packets |
+| Static scope | `SKILL.md`, referenced Markdown, Python, shell, PowerShell, batch, and JavaScript helper scripts |
+| Agent-assisted boundary | The reviewed skill's code stays unexecuted; the agent reviews a CLI-generated evidence packet. |
+
+## Fixture Benchmark
+
+The bundled benchmark is intentionally a smoke contract for rule coverage, not a broad scanner-quality claim.
+
+| Metric | Value |
+| --- | ---: |
+| Cases | `14` |
+| Benign controls | `2` |
+| Risky cases | `12` |
+| Precision / recall / F1 | `1.0 / 1.0 / 1.0` |
+| False positive rate | `0.0` |
+| Rule coverage | `1.0` |
+| Static findings | `70` total: `16` medium, `36` high, `18` critical |
 
 ## Contents
 
-- [At a Glance](#at-a-glance)
+- [Scan-Gate Snapshot](#scan-gate-snapshot)
+- [Fixture Benchmark](#fixture-benchmark)
 - [Why](#why)
 - [What This Is](#what-this-is)
 - [Choose a Path](#choose-a-path)
@@ -74,14 +91,15 @@ reviewed skill's code unexecuted.
 
 ## Choose a Path
 
-| Goal | Start with |
+| Security job | Start with |
 | --- | --- |
-| Scan one local skill quickly | `skill-vaccine scan path\to\skill --format text` |
-| Gate a pull request or build | [GitHub Action](docs/github-action.md) or [pre-commit](docs/pre-commit.md) |
-| Tune findings and thresholds | [Config](docs/config.md), [Rules](docs/rules.md), and [Suppressions](docs/suppressions.md) |
-| Explain a verdict to a reviewer | [Verdicts](docs/verdicts.md), [Trust tiers](docs/trust-tiers.md), and [Capabilities](docs/capabilities.md) |
-| Review cross-file hidden behavior | [Cross-file consistency](docs/cross-file-consistency.md) and [Risk graph](docs/risk-graph.md) |
-| Run agent-assisted review | [Semantic Layer 2](docs/semantic-layer2.md), [Jury Layer 3](docs/jury-layer3.md), and `skills/skill-vaccine-review` |
+| Local triage before installing a skill | `skill-vaccine scan path\to\skill --format text` |
+| Install only after a passing scan | `skill-vaccine install path\to\skill --fail-on high` |
+| CI or PR gate with SARIF | [GitHub Action](docs/github-action.md) and [pre-commit](docs/pre-commit.md) |
+| Registry or marketplace intake | [Host profiles](docs/host-profiles.md), [Trust tiers](docs/trust-tiers.md), and [Registry lifecycle risks](docs/registry-lifecycle-risks.md) |
+| Rule tuning and suppressions | [Rules](docs/rules.md), [Config](docs/config.md), and [Suppressions](docs/suppressions.md) |
+| Cross-file hidden behavior review | [Cross-file consistency](docs/cross-file-consistency.md) and [Risk graph](docs/risk-graph.md) |
+| Agent-assisted semantic review | [Semantic Layer 2](docs/semantic-layer2.md), [Jury Layer 3](docs/jury-layer3.md), and [`skills/skill-vaccine-review`](skills/skill-vaccine-review) |
 
 ## Install
 
